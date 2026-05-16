@@ -25,8 +25,13 @@ function defaultForParam(p) {
   return steps[mid]?.value ?? 0.5
 }
 
+function decodeSafe(s) {
+  try { return decodeURIComponent(s) } catch { return s }
+}
+
 function parseHash() {
-  const hash = location.hash.slice(1)
+  let hash = location.hash.slice(1)
+  hash = hash.replace(/\|/g, ';')
   if (!hash) {
     const params = resolveParams('movie')
     return {
@@ -37,24 +42,26 @@ function parseHash() {
     }
   }
 
-  const segs = hash.split('|')
-  const first = segs[0]
+  const segs = hash.split(';')
+  const first = decodeSafe(segs[0])
   const ci = first.indexOf(':')
   const typeRaw = ci === -1 ? first : first.slice(0, ci)
-  const name = ci === -1 ? '' : first.slice(ci + 1).replace(/_/g, ' ')
   const type = config.types[typeRaw] ? typeRaw : 'movie'
+  let name = ''
+  if (ci !== -1) {
+    name = decodeSafe(first.slice(ci + 1)).replace(/_/g, ' ')
+  }
   const params = resolveParams(type)
   const values = {}
-  let hasHashParams = false
 
   for (let i = 1; i < segs.length; i++) {
-    const sep = segs[i].indexOf(':')
+    const seg = decodeSafe(segs[i])
+    const sep = seg.indexOf(':')
     if (sep === -1) continue
-    const k = segs[i].slice(0, sep)
-    const v = segs[i].slice(sep + 1)
+    const k = seg.slice(0, sep)
+    const v = seg.slice(sep + 1)
     if (k && v !== undefined && config.paramDefs[k]) {
       values[k] = parseFloat(v)
-      hasHashParams = true
     }
   }
 
@@ -71,11 +78,11 @@ function parseHash() {
 
 function buildUrl(type, name, values, excluded, params) {
   let hash = type
-  if (name) hash += ':' + name.replace(/ /g, '_')
+  if (name) hash += ':' + encodeURIComponent(name.replace(/ /g, '_'))
   for (const p of params || []) {
     if (excluded?.has(p.key)) continue
     const v = values?.[p.key]
-    if (v !== undefined) hash += '|' + p.key + ':' + Math.round(v * 100) / 100
+    if (v !== undefined) hash += ';' + p.key + ':' + Math.round(v * 100) / 100
   }
   return '#' + hash
 }
