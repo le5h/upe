@@ -1,21 +1,14 @@
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect, useCallback } from 'preact/hooks'
 import config from '../config/evaluation.json'
 import { EvaluationPage } from '../templates/EvaluationPage'
 import { HomePage } from './HomePage'
+import { Footer } from '../molecules/Footer'
 import { useI18n } from '../i18n/context'
 
-const ghRedirect = sessionStorage.redirect
-if (ghRedirect) {
-  sessionStorage.removeItem('redirect')
-  const base = location.pathname.replace(/\/?$/, '/')
-  const path = ghRedirect.startsWith(base) ? '/' + ghRedirect.slice(base.length) : ghRedirect
-  history.replaceState(null, '', path)
-}
-
 function getPage() {
-  const path = window.location.pathname.replace(/\/$/, '') || '/'
-  if (path === '/') return 'home'
-  return config.types[path.split('/')[1]] ? 'eval' : 'home'
+  const hash = location.hash.slice(1)
+  if (!hash) return 'home'
+  return config.types[hash.split('|')[0].split(':')[0]] ? 'eval' : 'home'
 }
 
 const PAGE_TITLES = {
@@ -65,13 +58,26 @@ export function Home() {
     return () => removeEventListener('popstate', onPop)
   }, [])
 
+  const navigate = useCallback((to, isEval) => {
+    const update = () => {
+      history.pushState(null, '', isEval ? '#' + to : '/');
+      setPage(isEval ? 'eval' : 'home');
+    };
+    if (document.startViewTransition) {
+      document.startViewTransition(update);
+    } else {
+      update();
+    }
+  }, []);
+
   return (
     <>
       <DirSetter />
       {page === 'home'
-        ? <HomePage onSelect={t => { history.pushState(null, '', '/' + t); setPage('eval') }} />
-        : <EvaluationPage onHome={() => { history.pushState(null, '', '/'); setPage('home') }} />
+        ? <HomePage onSelect={t => navigate(t, true)} />
+        : <EvaluationPage onHome={() => navigate('home', false)} />
       }
+      <Footer />
     </>
   )
 }

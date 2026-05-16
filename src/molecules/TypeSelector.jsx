@@ -6,11 +6,12 @@ export function TypeSelector({ value, onChange }) {
   return (
     <div class="type-buttons">
       {Object.entries(config.types).map(([key, type]) => (
-        <button
-          key={key}
-          class={`type-btn ${key === value ? 'active' : ''}`}
-          onClick={() => onChange(key)}
-        >
+          <button
+            key={key}
+            class={`type-btn ${key === value ? 'active' : ''}`}
+            style={{ viewTransitionName: 'type-' + key }}
+            onClick={() => onChange(key)}
+          >
           {t(type.label)}
         </button>
       ))}

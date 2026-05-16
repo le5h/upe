@@ -4,7 +4,7 @@ import { NameInput } from './NameInput'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
 
-export function ScoreSummary({ totalScore, name, setName, onReset }) {
+export function ScoreSummary({ totalScore, name, setName, onReset, nameInputRef }) {
   const { t } = useI18n()
   const num = Math.round(totalScore * 100)
   const formatted = String(num).padStart(3, '0')
@@ -25,7 +25,7 @@ export function ScoreSummary({ totalScore, name, setName, onReset }) {
   return (
     <div class="score-summary">
       <div class="score-top">
-        <NameInput value={name} onChange={setName} />
+        <NameInput inputRef={nameInputRef} value={name} onChange={setName} />
         <div class="score-actions">
           <button onClick={share} class="btn btn-sm btn-share" title={t('Share')}>
             {copied ? <Trans>Copied!</Trans> : <>{'\u{1F517}'} <Trans>Share</Trans></>}

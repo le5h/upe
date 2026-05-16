@@ -19,55 +19,69 @@ function resolveParams(type) {
   return typeDef.parameters.map(enrichParam)
 }
 
-function parsePath() {
-  const parts = window.location.pathname.replace(/\/$/, '').split('/').filter(Boolean)
-  const type = parts[0] && config.types[parts[0]] ? parts[0] : 'movie'
-  const name = parts.length > 1 ? decodeURIComponent(parts.slice(1).join('/')).replace(/_/g, ' ') : ''
-  return { type, name }
-}
-
-function parseSearch(params) {
-  const search = new URL(window.location.href).searchParams
-  const hasParams = [...search.keys()].length > 0
-  const values = {}
-  const excluded = new Set()
-
-  for (const p of params) {
-    const v = search.get(p.key)
-    if (v !== null) {
-      values[p.key] = parseFloat(v)
-    } else {
-      values[p.key] = defaultForParam(p)
-      if (hasParams || p.key !== 'lk') excluded.add(p.key)
-    }
-  }
-  return { values, excluded }
-}
-
 function defaultForParam(p) {
   const steps = p.steps || []
   const mid = Math.floor((steps.length - 1) / 2)
   return steps[mid]?.value ?? 0.5
 }
 
+function parseHash() {
+  const hash = location.hash.slice(1)
+  if (!hash) {
+    const params = resolveParams('movie')
+    return {
+      type: 'movie',
+      name: '',
+      values: Object.fromEntries(params.map(p => [p.key, defaultForParam(p)])),
+      excluded: new Set(params.map(p => p.key)),
+    }
+  }
+
+  const segs = hash.split('|')
+  const first = segs[0]
+  const ci = first.indexOf(':')
+  const typeRaw = ci === -1 ? first : first.slice(0, ci)
+  const name = ci === -1 ? '' : first.slice(ci + 1).replace(/_/g, ' ')
+  const type = config.types[typeRaw] ? typeRaw : 'movie'
+  const params = resolveParams(type)
+  const values = {}
+  let hasHashParams = false
+
+  for (let i = 1; i < segs.length; i++) {
+    const sep = segs[i].indexOf(':')
+    if (sep === -1) continue
+    const k = segs[i].slice(0, sep)
+    const v = segs[i].slice(sep + 1)
+    if (k && v !== undefined && config.paramDefs[k]) {
+      values[k] = parseFloat(v)
+      hasHashParams = true
+    }
+  }
+
+  const excluded = new Set()
+  for (const p of params) {
+    if (!(p.key in values)) {
+      values[p.key] = defaultForParam(p)
+      excluded.add(p.key)
+    }
+  }
+
+  return { type, name, values, excluded }
+}
+
 function buildUrl(type, name, values, excluded, params) {
-  const path = name
-    ? `/${type}/${encodeURIComponent(name.replace(/ /g, '_'))}`
-    : `/${type}`
-  const search = new URLSearchParams()
+  let hash = type
+  if (name) hash += ':' + name.replace(/ /g, '_')
   for (const p of params || []) {
     if (excluded?.has(p.key)) continue
     const v = values?.[p.key]
-    if (v !== undefined) search.set(p.key, String(Math.round(v * 100) / 100))
+    if (v !== undefined) hash += '|' + p.key + ':' + Math.round(v * 100) / 100
   }
-  const qs = search.toString()
-  return qs ? path + '?' + qs : path
+  return '#' + hash
 }
 
 export function useEvaluation({ translateParam } = {}) {
-  const { type: initialType, name: initialName } = parsePath()
-  const initialParams = resolveParams(initialType)
-  const { values: initialValues, excluded: initialExcluded } = parseSearch(initialParams)
+  const { type: initialType, name: initialName, values: initialValues, excluded: initialExcluded } = parseHash()
 
   const [type, setTypeState] = useState(initialType)
   const [name, setNameState] = useState(initialName)
@@ -84,7 +98,7 @@ export function useEvaluation({ translateParam } = {}) {
     setNameState('')
     const newParams = resolveParams(newType)
     setValues(Object.fromEntries(newParams.map(p => [p.key, defaultForParam(p)])))
-    setExcluded(new Set(newParams.filter(p => p.key !== 'lk').map(p => p.key)))
+    setExcluded(new Set(newParams.map(p => p.key)))
   }, [])
 
   const setName = useCallback((n) => {
@@ -107,7 +121,7 @@ export function useEvaluation({ translateParam } = {}) {
   const resetAll = useCallback(() => {
     const ps = resolveParams(type)
     setValues(Object.fromEntries(ps.map(p => [p.key, defaultForParam(p)])))
-    setExcluded(new Set(ps.filter(p => p.key !== 'lk').map(p => p.key)))
+    setExcluded(new Set(ps.map(p => p.key)))
   }, [type])
 
   const totalScore = useMemo(() => {

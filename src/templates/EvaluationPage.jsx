@@ -6,6 +6,7 @@ import { useEvaluation } from '../hooks/useEvaluation'
 import { useUrlSync } from '../hooks/useUrlSync'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
+import { useEffect, useRef } from 'preact/hooks'
 
 export function EvaluationPage({ onHome }) {
   const { t, translateParam } = useI18n()
@@ -19,6 +20,11 @@ export function EvaluationPage({ onHome }) {
   })
 
   const { type, setType, name, setName, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll } = evalState
+  const nameInputRef = useRef(null)
+
+  useEffect(() => {
+    nameInputRef.current?.focus()
+  }, [type])
 
   return (
     <div class="evaluation-page">
@@ -33,7 +39,7 @@ export function EvaluationPage({ onHome }) {
           <TypeSelector value={type} onChange={setType} />
         </div>
 
-        <ScoreSummary totalScore={totalScore} name={name} setName={setName} onReset={resetAll} />
+        <ScoreSummary totalScore={totalScore} name={name} setName={setName} onReset={resetAll} nameInputRef={nameInputRef} />
       </div>
 
       <div class="scrollable-content">

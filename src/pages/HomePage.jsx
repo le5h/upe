@@ -35,7 +35,7 @@ export function HomePage({ onSelect }) {
 
       <section class="type-cards">
         {Object.entries(config.types).map(([key, type]) => (
-          <button key={key} class="type-card" onClick={() => onSelect(key)}>
+          <button key={key} class="type-card" style={{ viewTransitionName: 'type-' + key }} onClick={() => onSelect(key)}>
             <span class="type-card-icon">{icons[key]}</span>
             <span class="type-card-label">{t(type.label)}</span>
             <span class="type-card-desc">{t(typeDescIds[key])}</span>
