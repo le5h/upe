@@ -140,4 +140,6 @@ export default {
   "seo.useCase1.desc": "Cuantifica lo que hace grande a una temporada. Rastrea Coherencia argumental, Cliffhangers y Desarrollo de personajes en tu lista de seguimiento.",
   "seo.useCase2.desc": "Compara juegos de distintos g\u00e9neros con criterios consistentes. Punt\u00faa Jugabilidad, Atm\u00f3sfera, Optimizaci\u00f3n y Rejugabilidad en la misma escala.",
   "seo.useCase3.desc": "Crea puntuaciones transparentes y compartibles que tu audiencia pueda inspeccionar. Cada par\u00e1metro, peso y valor es visible en la URL.",
+  "pageTitle": "UPE \u2014 Evaluador param\u00e9trico universal",
+  "metaDesc": "Punt\u00faa pel\u00edculas, series y juegos con par\u00e1metros ponderados. Sin corazonadas \u2014 solo evaluaciones estructuradas y compartibles."
 }

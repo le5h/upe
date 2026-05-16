@@ -140,4 +140,6 @@ export default {
   "seo.useCase1.desc": "Quantifiziere, was eine gro\u00dfe Staffel ausmacht. Verfolge Handlungskonsistenz, Cliffhanger und Figurenentwicklung in deiner Watchlist.",
   "seo.useCase2.desc": "Vergleiche Spiele verschiedener Genres mit einheitlichen Kriterien. Bewerte Gameplay, Atmosph\u00e4re, Optimierung und Wiederspielwert auf derselben Skala.",
   "seo.useCase3.desc": "Erstelle transparente, teilbare Bewertungen, die dein Publikum pr\u00fcfen kann. Jeder Parameter, jedes Gewicht und jeder Wert ist in der URL sichtbar.",
+  "pageTitle": "UPE \u2014 Universeller parametrischer Bewerter",
+  "metaDesc": "Bewerte Filme, Serien und Spiele anhand gewichteter Parameter. Kein Bauchgef\u00fchl \u2014 nur strukturierte, teilbare Bewertungen."
 }

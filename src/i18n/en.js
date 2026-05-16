@@ -140,4 +140,6 @@ export default {
   "seo.useCase1.desc": "Quantify what makes a great season. Track Plot Consistency, Cliffhangers, and Character Development across your watchlist.",
   "seo.useCase2.desc": "Compare titles across genres with consistent criteria. Score Gameplay, Atmosphere, Optimization, and Replayability on the same scale.",
   "seo.useCase3.desc": "Produce transparent, shareable scores your audience can inspect. Every parameter, weight, and value is visible in the URL.",
+  "pageTitle": "UPE \u2014 Universal Parametric Evaluator",
+  "metaDesc": "Score movies, series, and games across weighted parameters. No gut feelings \u2014 just structured, shareable evaluations."
 }

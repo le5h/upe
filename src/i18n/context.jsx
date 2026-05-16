@@ -1,20 +1,38 @@
 import { createContext } from 'preact'
-import { useState, useCallback, useMemo, useContext } from 'preact/hooks'
+import { useState, useCallback, useMemo, useContext, useEffect } from 'preact/hooks'
 
-function detectLocale(translations) {
-  const saved = localStorage.getItem('locale')
-  if (saved && translations[saved]) return saved
-  const browser = navigator.language?.split('-')[0]
-  if (browser && translations[browser]) return browser
-  return Object.keys(translations)[0] || 'en'
+const LOAD_LOCALE = {
+  en: () => import('./en'),
+  ru: () => import('./ru'),
+  de: () => import('./de'),
+  ja: () => import('./ja'),
+  zh: () => import('./zh'),
+  es: () => import('./es'),
+  hi: () => import('./hi'),
+  ar: () => import('./ar'),
 }
 
 const RTL_LOCALES = new Set(['ar'])
 
+function detectLocale(locales) {
+  const saved = localStorage.getItem('locale')
+  if (saved && locales.includes(saved)) return saved
+  const browser = navigator.language?.split('-')[0]
+  if (browser && locales.includes(browser)) return browser
+  return locales[0] || 'en'
+}
+
 const I18nContext = createContext()
 
-export function I18nProvider({ translations, children }) {
-  const [locale, setLocaleState] = useState(() => detectLocale(translations))
+export function I18nProvider({ locales, children }) {
+  const [locale, setLocaleState] = useState(() => detectLocale(locales))
+  const [translations, setTranslations] = useState({})
+
+  useEffect(() => {
+    LOAD_LOCALE[locale]().then(mod => {
+      setTranslations(mod.default || mod)
+    })
+  }, [locale])
 
   const setLocale = useCallback((l) => {
     setLocaleState(l)
@@ -22,11 +40,10 @@ export function I18nProvider({ translations, children }) {
   }, [])
 
   const value = useMemo(() => {
-    const strings = translations[locale] || {}
-    const t = (key) => strings[key] ?? key
+    const t = (key) => translations[key] ?? key
     return {
       locale,
-      locales: Object.keys(translations),
+      locales,
       setLocale,
       rtl: RTL_LOCALES.has(locale),
       t,
@@ -38,7 +55,7 @@ export function I18nProvider({ translations, children }) {
         }
       },
     }
-  }, [locale, translations, setLocale])
+  }, [locale, locales, setLocale, translations])
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
 }

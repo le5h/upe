@@ -29,9 +29,8 @@ function decodeSafe(s) {
   try { return decodeURIComponent(s) } catch { return s }
 }
 
-function parseHash() {
-  let hash = location.hash.slice(1)
-  hash = hash.replace(/\|/g, ';')
+function parseHash(hash) {
+  hash = (hash || location.hash.slice(1)).replace(/\|/g, ';')
   if (!hash) {
     const params = resolveParams('movie')
     return {
