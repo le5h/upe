@@ -45,4 +45,18 @@ Edit `src/config/evaluation.json` to tweak:
 - **`paramDefs`** — Define parameter keys with label, type (subjective/objective), and step labels
 - **`types`** — Associate parameters with weights per evaluation type
 
-For production deployment, configure your server to serve `index.html` for all paths (SPA fallback).
+## Deploy to GitHub Pages
+
+```bash
+npm run build
+```
+
+Then push the `dist/` folder to the `gh-pages` branch of your repo:
+
+```bash
+npx gh-pages -d dist
+```
+
+Or use the [GitHub Actions deploy workflow](https://vite.dev/guide/static-deploy.html#github-pages).
+
+The `base: './'` config and `public/404.html` (with sessionStorage redirect) enable client-side routing on GitHub Pages without a custom server.
