@@ -29,8 +29,14 @@ export function I18nProvider({ locales, children }) {
   const [translations, setTranslations] = useState({})
 
   useEffect(() => {
-    LOAD_LOCALE[locale]().then(mod => {
+    const loader = LOAD_LOCALE[locale]
+    if (!loader) return
+    loader().then(mod => {
       setTranslations(mod.default || mod)
+    }).catch(() => {
+      if (locale !== 'en') {
+        LOAD_LOCALE.en().then(mod => setTranslations(mod.default || mod))
+      }
     })
   }, [locale])
 

@@ -19,10 +19,8 @@ function resolveParams(type) {
   return typeDef.parameters.map(enrichParam)
 }
 
-function defaultForParam(p) {
-  const steps = p.steps || []
-  const mid = Math.floor((steps.length - 1) / 2)
-  return steps[mid]?.value ?? 0.5
+function defaultForParam(_p) {
+  return 0.5
 }
 
 function decodeSafe(s) {

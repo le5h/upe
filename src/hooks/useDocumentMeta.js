@@ -5,7 +5,9 @@ export function useDocumentMeta() {
   const { t, locale, rtl } = useI18n()
 
   useEffect(() => {
-    document.documentElement.dir = rtl ? 'rtl' : 'ltr'
+    const root = document.documentElement
+    root.dir = rtl ? 'rtl' : 'ltr'
+    root.lang = locale
     document.title = t('pageTitle')
     const meta = document.querySelector('meta[name="description"]') || (() => {
       const el = document.createElement('meta')

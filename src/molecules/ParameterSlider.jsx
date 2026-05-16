@@ -29,10 +29,13 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
   const max = steps[steps.length - 1]?.value ?? 1
 
   const closestStep = useMemo(
-    () => steps.reduce((a, b) =>
-      Math.abs(b.value - value) < Math.abs(a.value - value) ? b : a
-    ),
-    [steps, value]
+    () => {
+      if (isBinary && value === 0.5) return null
+      return steps.reduce((a, b) =>
+        Math.abs(b.value - value) < Math.abs(a.value - value) ? b : a
+      )
+    },
+    [isBinary, steps, value]
   )
 
   const accent = accentColor(value)
@@ -69,7 +72,7 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
         <span class="param-label">{param.emoji && <span class="param-emoji">{param.emoji}</span>}{param.label}</span>
         <WeightBadge weight={param.weight} />
         <span class="param-value">
-          {isBinary ? closestStep.label : value.toFixed(2)}
+          {isBinary ? (closestStep?.label ?? '\u2014') : value.toFixed(2)}
         </span>
       </div>
       {isBinary ? (
@@ -100,7 +103,7 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
             {steps.map(s => (
               <span
                 key={s.value}
-                class={`step-tick ${s.value === closestStep.value ? 'active' : ''}`}
+                class={`step-tick ${closestStep && s.value === closestStep.value ? 'active' : ''}`}
                 onClick={() => handleStepClick(s)}
               >
                 {s.label}
