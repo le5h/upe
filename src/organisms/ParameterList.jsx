@@ -29,8 +29,8 @@ export function ParameterList({ params, values, onChange, excluded, onToggleExcl
 
   return (
     <div class="parameter-list">
-      <Section title={t('Subjective')} params={subjective} values={values} onChange={onChange} excluded={excluded} onToggleExcluded={onToggleExcluded} />
-      <Section title={t('Objective')} params={objective} values={values} onChange={onChange} excluded={excluded} onToggleExcluded={onToggleExcluded} />
+      <Section title={'\u{1F4AD} ' + t('Subjective')} params={subjective} values={values} onChange={onChange} excluded={excluded} onToggleExcluded={onToggleExcluded} />
+      <Section title={'\u{1F4CB} ' + t('Objective')} params={objective} values={values} onChange={onChange} excluded={excluded} onToggleExcluded={onToggleExcluded} />
     </div>
   )
 }

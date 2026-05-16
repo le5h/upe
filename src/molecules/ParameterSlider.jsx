@@ -43,7 +43,7 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
             onInput={onToggleExcluded}
           />
         </label>
-        <span class="param-label">{param.label}</span>
+        <span class="param-label">{param.emoji && <span class="param-emoji">{param.emoji}</span>}{param.label}</span>
         <WeightBadge weight={param.weight} />
         <span class="param-value">
           {isBinary ? closestStep.label : value.toFixed(2)}

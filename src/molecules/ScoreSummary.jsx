@@ -28,9 +28,9 @@ export function ScoreSummary({ totalScore, name, setName, onReset }) {
         <NameInput value={name} onChange={setName} />
         <div class="score-actions">
           <button onClick={share} class="btn btn-sm btn-share" title={t('Share')}>
-            {copied ? <Trans>Copied!</Trans> : <Trans>Share</Trans>}
+            {copied ? <Trans>Copied!</Trans> : <>{'\u{1F517}'} <Trans>Share</Trans></>}
           </button>
-          <button onClick={onReset} class="btn btn-sm btn-reset" title={t('Reset')}><Trans>Reset</Trans></button>
+          <button onClick={onReset} class="btn btn-sm btn-reset" title={t('Reset')}>{'\u{1F504}'} <Trans>Reset</Trans></button>
         </div>
       </div>
       <div class="score-mid">

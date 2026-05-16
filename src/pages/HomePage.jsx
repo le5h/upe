@@ -13,6 +13,7 @@ const typeDescIds = {
 
 const seoWhyIds = ['seo.why0', 'seo.why1', 'seo.why2', 'seo.why3', 'seo.why4']
 
+const useCaseIcons = ['\u{1F3AC}', '\u{1F4FA}', '\u{1F3AE}', '\u{270D}\u{FE0F}']
 const useCaseTitles = ['Movie enthusiasts', 'Series binge-watchers', 'Gamers', 'Reviewers & creators']
 const useCaseDescIds = ['seo.useCase0.desc', 'seo.useCase1.desc', 'seo.useCase2.desc', 'seo.useCase3.desc']
 
@@ -43,21 +44,21 @@ export function HomePage({ onSelect }) {
       </section>
 
       <section class="seo">
-        <h2><Trans>What is UPE?</Trans></h2>
+        <h2>{'\u{1F4CA}'} <Trans>What is UPE?</Trans></h2>
         <p>{t('seo.whatText')}</p>
 
-        <h2><Trans>Why use a parametric evaluator?</Trans></h2>
+        <h2>{'\u{1F4A1}'} <Trans>Why use a parametric evaluator?</Trans></h2>
         <ul>
           {seoWhyIds.map((id, i) => (
-            <li key={i}><strong>{t(id + '.title')}</strong> — {t(id + '.desc')}</li>
+            <li key={i}><span class="li-icon">{['\u{1F50D}', '\u{1F9E0}', '\u{1F4AC}', '\u{2696}\u{FE0F}', '\u{1F3AF}'][i]}</span> <strong>{t(id + '.title')}</strong> {'\u2014'} {t(id + '.desc')}</li>
           ))}
         </ul>
 
-        <h2><Trans>Perfect for</Trans></h2>
+        <h2>{'\u{1F465}'} <Trans>Perfect for</Trans></h2>
         <div class="use-cases">
           {useCaseTitles.map((title, i) => (
             <div key={i} class="use-case">
-              <h3>{t(title)}</h3>
+              <h3><span class="uc-icon">{useCaseIcons[i]}</span> {t(title)}</h3>
               <p>{t(useCaseDescIds[i])}</p>
             </div>
           ))}
