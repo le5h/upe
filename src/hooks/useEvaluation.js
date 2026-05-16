@@ -64,7 +64,7 @@ function buildUrl(type, name, values, excluded, params) {
   return qs ? path + '?' + qs : path
 }
 
-export function useEvaluation() {
+export function useEvaluation({ translateParam } = {}) {
   const { type: initialType, name: initialName } = parsePath()
   const initialParams = resolveParams(initialType)
   const { values: initialValues, excluded: initialExcluded } = parseSearch(initialParams)
@@ -74,7 +74,10 @@ export function useEvaluation() {
   const [values, setValues] = useState(initialValues)
   const [excluded, setExcluded] = useState(initialExcluded)
 
-  const params = useMemo(() => resolveParams(type), [type])
+  const params = useMemo(() => {
+    const raw = resolveParams(type)
+    return translateParam ? raw.map(translateParam) : raw
+  }, [type, translateParam])
 
   const setType = useCallback((newType) => {
     setTypeState(newType)

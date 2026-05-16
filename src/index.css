@@ -455,6 +455,46 @@ body {
 
 .binary-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
 
+/* ─── Lang Switcher ─── */
+
+.lang-dropdown {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: var(--sans);
+  transition: all 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6' fill='%236b6b7e'%3E%3Cpath d='M0 0l4 6 4-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 8px 6px;
+  padding-right: 20px;
+}
+
+.lang-dropdown:hover {
+  color: var(--text-h);
+  border-color: var(--accent);
+  background-color: var(--accent-bg);
+}
+
+.lang-dropdown option {
+  background: var(--bg-card);
+  color: var(--text-h);
+}
+
+.hero-lang {
+  align-self: flex-end;
+  margin-bottom: -4px;
+}
+
 /* ─── Home Button (evaluation header) ─── */
 
 .btn-home {
@@ -705,4 +745,25 @@ body {
   .use-case { padding: 12px; }
   .use-case h3 { font-size: 13px; }
   .use-case p { font-size: 12px; }
+}
+
+/* ─── RTL Overrides ─── */
+
+[dir="rtl"] .type-buttons { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .score-digits { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .param-value { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .slider { background: linear-gradient(to left, var(--accent) 0%, var(--accent) var(--fill), var(--bg-input) var(--fill), var(--bg-input) 100%); }
+[dir="rtl"] .param-excluded .slider { background: linear-gradient(to left, var(--text-muted) 0%, var(--text-muted) var(--fill), var(--bg-input) var(--fill), var(--bg-input) 100%); }
+[dir="rtl"] .slider::-moz-range-progress { border-radius: 0 2px 2px 0; }
+[dir="rtl"] .score-bar-glow { background: linear-gradient(270deg, var(--accent), var(--green)); }
+[dir="rtl"] .score-bar-fill { background: linear-gradient(270deg, var(--accent), var(--green)); }
+[dir="rtl"] .seo ul { padding-left: 0; padding-right: 20px; }
+[dir="rtl"] .lang-dropdown { background-position: left 6px center; padding-right: 6px; padding-left: 20px; }
+[dir="rtl"] .hero-lang { align-self: flex-start; }
+[dir="rtl"] .btn-home { transform: scaleX(-1); }
+
+@media (max-width: 640px) {
+  [dir="rtl"] .type-buttons { margin-right: 0; }
+  [dir="rtl"] .score-digits { margin-right: 0; justify-content: center; }
+  [dir="rtl"] .type-card { text-align: right; }
 }

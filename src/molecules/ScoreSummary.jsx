@@ -1,8 +1,11 @@
 import { useRef, useState } from 'preact/hooks'
 import { ScoreBar } from '../atoms/ScoreBar'
 import { NameInput } from './NameInput'
+import { useI18n } from '../i18n/context'
+import { Trans } from '../i18n/Trans'
 
 export function ScoreSummary({ totalScore, name, setName, onReset }) {
+  const { t } = useI18n()
   const num = Math.round(totalScore * 100)
   const formatted = String(num).padStart(3, '0')
   const outOf10 = (totalScore * 10).toFixed(1)
@@ -24,10 +27,10 @@ export function ScoreSummary({ totalScore, name, setName, onReset }) {
       <div class="score-top">
         <NameInput value={name} onChange={setName} />
         <div class="score-actions">
-          <button onClick={share} class="btn btn-sm btn-share" title="Copy share URL">
-            {copied ? 'Copied' : 'Share'}
+          <button onClick={share} class="btn btn-sm btn-share" title={t('Share')}>
+            {copied ? <Trans>Copied!</Trans> : <Trans>Share</Trans>}
           </button>
-          <button onClick={onReset} class="btn btn-sm btn-reset" title="Reset all to defaults">Reset</button>
+          <button onClick={onReset} class="btn btn-sm btn-reset" title={t('Reset')}><Trans>Reset</Trans></button>
         </div>
       </div>
       <div class="score-mid">
