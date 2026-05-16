@@ -21,6 +21,7 @@
     "sd": { "label": "Sound Design", "emoji": "\uD83D\uDD0A", "type": "objective", "steps": ["Painful", "Basic", "Immersive", "Cinematic"] },
     "at": { "label": "Atmosphere", "emoji": "\uD83C\uDF2B\uFE0F", "type": "subjective", "steps": ["Flat", "Thin", "Rich", "Dense"] },
     "af": { "label": "Aftertaste", "emoji": "\uD83D\uDC45", "type": "subjective", "steps": ["Bitter", "Mild", "Pleasant", "Haunting"] },
+    "fu": { "label": "Fun", "emoji": "\uD83C\uDF89", "type": "subjective", "steps": ["Boring", "Meh", "Fun", "Blast"] },
     "fd": { "label": "Fidelity", "emoji": "\uD83C\uDFAF", "type": "objective", "steps": ["Betrays", "Diverges", "Honors", "Elevates"] }
   },
   "types": {
@@ -66,6 +67,7 @@
         { "key": "rp", "weight": 0.7 },
         { "key": "mu", "weight": 0.6 },
         { "key": "sd", "weight": 0.6 },
+        { "key": "fu", "weight": 0.7 },
         { "key": "af", "weight": 0.6 }
       ]
     }

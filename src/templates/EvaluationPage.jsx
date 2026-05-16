@@ -27,7 +27,7 @@ export function EvaluationPage({ onHome }) {
           <button class="btn-home" onClick={onHome} title={t('Home')}>&#8592;</button>
           <h1 class="title">
             <span class="title-highlight"><Trans>UPE</Trans></span>
-            <span class="title-sub"><Trans>Universal Parametric Evaluator</Trans></span>
+            <span class="title-sub"><Trans>Universal Parametric Evaluator</Trans> <small>v0.1</small></span>
           </h1>
           <LangSwitcher />
           <TypeSelector value={type} onChange={setType} />

@@ -4,6 +4,14 @@ import { EvaluationPage } from '../templates/EvaluationPage'
 import { HomePage } from './HomePage'
 import { useI18n } from '../i18n/context'
 
+const ghRedirect = sessionStorage.redirect
+if (ghRedirect) {
+  sessionStorage.removeItem('redirect')
+  const base = location.pathname.replace(/\/?$/, '/')
+  const path = ghRedirect.startsWith(base) ? '/' + ghRedirect.slice(base.length) : ghRedirect
+  history.replaceState(null, '', path)
+}
+
 function getPage() {
   const path = window.location.pathname.replace(/\/$/, '') || '/'
   if (path === '/') return 'home'

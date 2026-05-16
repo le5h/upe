@@ -64,7 +64,8 @@ body {
   align-items: baseline;
   gap: 8px;
   margin: 0;
-  flex-shrink: 0;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .title-highlight {
@@ -75,6 +76,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  flex-shrink: 0;
 }
 
 .title-sub {
@@ -82,6 +84,9 @@ body {
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ─── Type Buttons ─── */
@@ -334,7 +339,7 @@ body {
   line-height: 1;
 }
 
-.param-excluded { opacity: 0.3; }
+.param-excluded { opacity: 0.55; }
 
 .param-excluded .slider::-webkit-slider-thumb {
   box-shadow: 0 0 0 2px var(--text-muted);
@@ -598,19 +603,24 @@ body {
   align-items: center;
   gap: 6px;
   padding: 24px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--accent);
+  border: none;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   font-family: var(--sans);
   text-align: center;
+  color: #fff;
 }
 
 .type-card:hover {
-  border-color: var(--accent);
-  background: var(--accent-bg);
-  transform: translateY(-2px);
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.type-card:active {
+  transform: scale(0.97);
+  background: var(--accent);
 }
 
 .type-card-icon {
@@ -621,12 +631,12 @@ body {
 .type-card-label {
   font-size: 18px;
   font-weight: 700;
-  color: var(--text-h);
+  color: #fff;
 }
 
 .type-card-desc {
   font-size: 12px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.7);
   line-height: 1.4;
 }
 
@@ -761,7 +771,7 @@ body {
   .hero-desc { font-size: 13px; }
 
   .type-cards { flex-direction: column; gap: 10px; }
-  .type-card { padding: 18px 14px; flex-direction: row; text-align: left; gap: 10px; }
+  .type-card { padding: 14px 14px; flex-direction: row; text-align: left; gap: 10px; }
   .type-card-icon { font-size: 28px; }
   .type-card-label { font-size: 16px; }
   .type-card-desc { font-size: 11px; }
