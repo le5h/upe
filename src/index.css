@@ -118,7 +118,12 @@ body {
   color: #fff;
 }
 
-/* ─── Score Row ─── */
+.scrollable-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 32px;
+}
 
 /* ─── Score Summary Card ─── */
 
@@ -450,6 +455,189 @@ body {
 
 .binary-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
 
+/* ─── Home Button (evaluation header) ─── */
+
+.btn-home {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.btn-home:hover {
+  color: var(--text-h);
+  border-color: var(--accent);
+}
+
+/* ─── Home Page ─── */
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 0 60px;
+}
+
+.hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-title {
+  margin: 0;
+}
+
+.hero-highlight {
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: -3px;
+  background: linear-gradient(135deg, var(--accent), #c084fc, var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.hero-desc {
+  max-width: 520px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 4px 0 0;
+}
+
+/* ─── Type Cards ─── */
+
+.type-cards {
+  display: flex;
+  gap: 12px;
+}
+
+.type-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--sans);
+  text-align: center;
+}
+
+.type-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  transform: translateY(-2px);
+}
+
+.type-card-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.type-card-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.type-card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ─── SEO Section ─── */
+
+.seo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seo h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 16px 0 0;
+}
+
+.seo h2:first-child {
+  margin-top: 0;
+}
+
+.seo p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0;
+}
+
+.seo ul {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.seo li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.use-cases {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.use-case {
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.use-case h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 4px;
+}
+
+.use-case p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* ─── Share ─── */
 
 .btn {
@@ -498,4 +686,23 @@ body {
 
   .btn { padding: 6px 10px; font-size: 12px; }
   .btn-reset { padding: 8px 8px; font-size: 10px; }
+
+  .home-page { gap: 28px; padding: 24px 0 40px; }
+  .hero-highlight { font-size: 42px; }
+  .hero-sub { font-size: 15px; }
+  .hero-desc { font-size: 13px; }
+
+  .type-cards { flex-direction: column; gap: 10px; }
+  .type-card { padding: 18px 14px; flex-direction: row; text-align: left; gap: 10px; }
+  .type-card-icon { font-size: 28px; }
+  .type-card-label { font-size: 16px; }
+  .type-card-desc { font-size: 11px; }
+
+  .seo h2 { font-size: 17px; }
+  .seo p, .seo li { font-size: 13px; }
+
+  .use-cases { grid-template-columns: 1fr; gap: 10px; }
+  .use-case { padding: 12px; }
+  .use-case h3 { font-size: 13px; }
+  .use-case p { font-size: 12px; }
 }

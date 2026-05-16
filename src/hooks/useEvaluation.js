@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'preact/hooks'
+import { useState, useCallback, useMemo } from 'preact/hooks'
 import config from '../config/evaluation.json'
 
 function computeSteps(labels) {
@@ -38,7 +38,7 @@ function parseSearch(params) {
       values[p.key] = parseFloat(v)
     } else {
       values[p.key] = defaultForParam(p)
-      if (hasParams || p.key !== 'l') excluded.add(p.key)
+      if (hasParams || p.key !== 'lk') excluded.add(p.key)
     }
   }
   return { values, excluded }
@@ -74,14 +74,14 @@ export function useEvaluation() {
   const [values, setValues] = useState(initialValues)
   const [excluded, setExcluded] = useState(initialExcluded)
 
-  const params = resolveParams(type)
+  const params = useMemo(() => resolveParams(type), [type])
 
   const setType = useCallback((newType) => {
     setTypeState(newType)
     setNameState('')
     const newParams = resolveParams(newType)
     setValues(Object.fromEntries(newParams.map(p => [p.key, defaultForParam(p)])))
-    setExcluded(new Set(newParams.filter(p => p.key !== 'l').map(p => p.key)))
+    setExcluded(new Set(newParams.filter(p => p.key !== 'lk').map(p => p.key)))
   }, [])
 
   const setName = useCallback((n) => {
@@ -104,21 +104,20 @@ export function useEvaluation() {
   const resetAll = useCallback(() => {
     const ps = resolveParams(type)
     setValues(Object.fromEntries(ps.map(p => [p.key, defaultForParam(p)])))
-    setExcluded(new Set(ps.filter(p => p.key !== 'l').map(p => p.key)))
+    setExcluded(new Set(ps.filter(p => p.key !== 'lk').map(p => p.key)))
   }, [type])
 
-  const totalScore = (() => {
-    const ps = resolveParams(type)
+  const totalScore = useMemo(() => {
     let weightedSum = 0
     let totalWeight = 0
-    for (const p of ps) {
+    for (const p of params) {
       if (excluded.has(p.key)) continue
       const v = values[p.key] ?? defaultForParam(p)
       weightedSum += v * p.weight
       totalWeight += p.weight
     }
     return totalWeight > 0 ? weightedSum / totalWeight : 0
-  })()
+  }, [params, values, excluded])
 
   return { type, setType, name, setName, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll }
 }

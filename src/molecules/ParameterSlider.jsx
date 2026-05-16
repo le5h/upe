@@ -1,3 +1,4 @@
+import { useMemo } from 'preact/hooks'
 import { WeightBadge } from '../atoms/WeightBadge'
 
 export function ParameterSlider({ param, value, onChange, excluded, onToggleExcluded }) {
@@ -6,8 +7,11 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
   const min = steps[0]?.value ?? 0
   const max = steps[steps.length - 1]?.value ?? 1
 
-  const closestStep = steps.reduce((a, b) =>
-    Math.abs(b.value - value) < Math.abs(a.value - value) ? b : a
+  const closestStep = useMemo(
+    () => steps.reduce((a, b) =>
+      Math.abs(b.value - value) < Math.abs(a.value - value) ? b : a
+    ),
+    [steps, value]
   )
 
   const handleEnable = () => {

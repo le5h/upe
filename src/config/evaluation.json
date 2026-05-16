@@ -1,67 +1,72 @@
 {
   "paramDefs": {
-    "l": { "label": "I like it", "type": "subjective", "steps": ["No", "Yes"] },
-    "s": { "label": "Story", "type": "subjective", "steps": ["Awful", "Poor", "Okay", "Good", "Great", "Masterpiece"] },
-    "v": { "label": "Visuals", "type": "subjective", "steps": ["Ugly", "Mediocre", "Decent", "Stunning"] },
-    "m": { "label": "Music", "type": "subjective", "steps": ["Terrible", "Weak", "Decent", "Iconic"] },
-    "a": { "label": "Acting", "type": "subjective", "steps": ["Wooden", "Stiff", "Convincing", "Brilliant"] },
-    "f": { "label": "Finale", "type": "subjective", "steps": ["Ruined", "Weak", "Okay", "Satisfying", "Great", "Perfect"] },
-    "p": { "label": "Pace", "type": "subjective", "steps": ["Painful", "Slow", "Smooth", "Perfect"] },
-    "d": { "label": "Dialogue", "type": "objective", "steps": ["Cringey", "Clunky", "Natural", "Brilliant"] },
-    "c": { "label": "Cinematography", "type": "objective", "steps": ["Amateur", "Basic", "Polished", "Masterful"] },
-    "e": { "label": "Editing", "type": "objective", "steps": ["Amateur", "Rough", "Polished", "Masterful"] },
-    "cd": { "label": "Character Dev.", "type": "subjective", "steps": ["Flat", "Stereotype", "Developed", "Profound"] },
+    "lk": { "label": "I like it", "type": "subjective", "steps": ["No", "Yes"] },
+    "st": { "label": "Story", "type": "subjective", "steps": ["Awful", "Poor", "Okay", "Good", "Great", "Masterpiece"] },
+    "vs": { "label": "Visuals", "type": "subjective", "steps": ["Dated", "Average", "Impressive", "Breathtaking"] },
+    "mu": { "label": "Soundtrack", "type": "subjective", "steps": ["Forgettable", "Fits", "Memorable", "Iconic"] },
+    "ac": { "label": "Acting", "type": "objective", "steps": ["Wooden", "Stiff", "Convincing", "Brilliant"] },
+    "fn": { "label": "Finale", "type": "subjective", "steps": ["Ruined", "Weak", "Okay", "Satisfying", "Great", "Perfect"] },
+    "pa": { "label": "Pace", "type": "objective", "steps": ["Painful", "Slow", "Smooth", "Perfect"] },
+    "dl": { "label": "Dialogue", "type": "objective", "steps": ["Cringey", "Clunky", "Natural", "Brilliant"] },
+    "ci": { "label": "Cinematography", "type": "objective", "steps": ["Amateur", "Basic", "Polished", "Masterful"] },
+    "ed": { "label": "Editing", "type": "objective", "steps": ["Amateur", "Rough", "Polished", "Masterful"] },
+    "cd": { "label": "Character Development", "type": "objective", "steps": ["Flat", "Stereotype", "Developed", "Profound"] },
+    "ch": { "label": "Cliffhangers", "type": "subjective", "steps": ["None", "Mild", "Hooked", "Binge-worthy"] },
     "pc": { "label": "Plot Consistency", "type": "objective", "steps": ["Shaky", "Loose", "Coherent", "Tight"] },
-    "r": { "label": "Rewatchability", "type": "subjective", "steps": ["Never", "Rarely", "Sometimes", "Often"] },
-    "g": { "label": "Gameplay", "type": "objective", "steps": ["Broken", "Clunky", "Solid", "Fluid", "Polished", "Revolutionary"] },
-    "rp": { "label": "Replayability", "type": "subjective", "steps": ["One-time", "Low", "High", "Endless"] },
-    "o": { "label": "Optimization", "type": "objective", "steps": ["Unplayable", "Rough", "Smooth", "Flawless"] },
-    "mp": { "label": "Multiplayer", "type": "subjective", "steps": ["Dead", "Quiet", "Active", "Thriving"] },
-    "sd": { "label": "Sound Design", "type": "objective", "steps": ["Painful", "Basic", "Immersive", "Cinematic"] }
+    "rw": { "label": "Rewatchability", "type": "subjective", "steps": ["Never", "Rarely", "Sometimes", "Often"] },
+    "gp": { "label": "Gameplay", "type": "subjective", "steps": ["Broken", "Clunky", "Solid", "Fluid", "Polished", "Revolutionary"] },
+    "rp": { "label": "Replayability", "type": "objective", "steps": ["One-time", "Low", "High", "Endless"] },
+    "op": { "label": "Optimization", "type": "objective", "steps": ["Unplayable", "Rough", "Smooth", "Flawless"] },
+    "mp": { "label": "Multiplayer", "type": "objective", "steps": ["Dead", "Quiet", "Active", "Thriving"] },
+    "sd": { "label": "Sound Design", "type": "objective", "steps": ["Painful", "Basic", "Immersive", "Cinematic"] },
+    "at": { "label": "Atmosphere", "type": "subjective", "steps": ["Flat", "Thin", "Rich", "Dense"] },
+    "af": { "label": "Aftertaste", "type": "subjective", "steps": ["Bitter", "Mild", "Pleasant", "Haunting"] },
+    "fd": { "label": "Fidelity", "type": "objective", "steps": ["Betrays", "Diverges", "Honors", "Elevates"] }
   },
   "types": {
     "movie": {
       "label": "Movie",
       "parameters": [
-        { "key": "l", "weight": 2.0 },
-        { "key": "s", "weight": 1.0 },
-        { "key": "a", "weight": 0.9 },
-        { "key": "f", "weight": 0.8 },
-        { "key": "v", "weight": 0.8 },
-        { "key": "m", "weight": 0.7 },
-        { "key": "d", "weight": 0.6 },
-        { "key": "p", "weight": 0.6 },
-        { "key": "c", "weight": 0.6 },
-        { "key": "e", "weight": 0.6 }
+        { "key": "lk", "weight": 2.0 },
+        { "key": "st", "weight": 1.0 },
+        { "key": "ac", "weight": 0.9 },
+        { "key": "ci", "weight": 0.8 },
+        { "key": "fn", "weight": 0.8 },
+        { "key": "vs", "weight": 0.8 },
+        { "key": "af", "weight": 0.7 },
+        { "key": "fd", "weight": 0.7 },
+        { "key": "mu", "weight": 0.7 },
+        { "key": "dl", "weight": 0.6 }
       ]
     },
     "series": {
       "label": "Series",
       "parameters": [
-        { "key": "l", "weight": 2.0 },
-        { "key": "s", "weight": 1.0 },
-        { "key": "a", "weight": 1.0 },
-        { "key": "f", "weight": 0.9 },
+        { "key": "lk", "weight": 2.0 },
+        { "key": "st", "weight": 1.0 },
+        { "key": "pc", "weight": 1.0 },
         { "key": "cd", "weight": 0.9 },
-        { "key": "pc", "weight": 0.8 },
-        { "key": "m", "weight": 0.7 },
-        { "key": "v", "weight": 0.6 },
-        { "key": "e", "weight": 0.6 }
+        { "key": "ac", "weight": 0.8 },
+        { "key": "ch", "weight": 0.8 },
+        { "key": "mu", "weight": 0.7 },
+        { "key": "af", "weight": 0.7 },
+        { "key": "vs", "weight": 0.6 },
+        { "key": "fn", "weight": 0.5 }
       ]
     },
     "game": {
       "label": "Game",
       "parameters": [
-        { "key": "l", "weight": 2.0 },
-        { "key": "g", "weight": 1.0 },
-        { "key": "s", "weight": 0.9 },
-        { "key": "v", "weight": 0.8 },
-        { "key": "o", "weight": 0.7 },
+        { "key": "lk", "weight": 2.0 },
+        { "key": "gp", "weight": 1.0 },
+        { "key": "st", "weight": 0.9 },
+        { "key": "vs", "weight": 0.8 },
+        { "key": "at", "weight": 0.8 },
+        { "key": "op", "weight": 0.7 },
         { "key": "rp", "weight": 0.7 },
-        { "key": "m", "weight": 0.6 },
+        { "key": "mu", "weight": 0.6 },
         { "key": "sd", "weight": 0.6 },
-        { "key": "mp", "weight": 0.5 },
-        { "key": "e", "weight": 0.5 }
+        { "key": "af", "weight": 0.6 }
       ]
     }
   }
