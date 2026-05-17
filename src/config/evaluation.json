@@ -36,8 +36,8 @@
         { "key": "ac", "weight": 0.8 },
         { "key": "mu", "weight": 0.8 },
         { "key": "af", "weight": 0.7 },
-        { "key": "fd", "weight": 0.7 },
-        { "key": "dl", "weight": 0.7 }
+        { "key": "dl", "weight": 0.7 },
+        { "key": "fd", "weight": 0.5 }
       ]
     },
     "series": {
