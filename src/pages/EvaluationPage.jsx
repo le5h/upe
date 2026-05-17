@@ -37,7 +37,7 @@ export function EvaluationPage({ onHome }) {
   }, [type])
 
   return (
-    <div class="evaluation-page">
+    <div class="flex-col">
       <div class="sticky-header">
         <div class="header-top">
           <button class="btn-home" onClick={onHome} title={t('Home')}>&#8592;</button>

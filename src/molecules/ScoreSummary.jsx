@@ -30,8 +30,6 @@ export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sha
     <div class="score-summary">
       <div class="score-name-row">
         <NameInput inputRef={nameInputRef} value={name} onChange={setName} onRestore={onRestore} />
-        <div class="score-actions">
-        </div>
       </div>
       <div class="score-byline">
         {showByField && <input
