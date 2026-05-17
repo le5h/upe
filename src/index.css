@@ -160,7 +160,6 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 32px;
 }
 
 /* ─── Score Summary Card ─── */
@@ -535,6 +534,7 @@ body::before {
   border-radius: 3px;
   background: rgb(var(--param-accent, 124, 92, 252));
   opacity: 0.25;
+  width: var(--slider-pct, 0%);
 }
 
 .slider-fill {
@@ -542,6 +542,7 @@ body::before {
   inset: 0;
   border-radius: 3px 0 0 3px;
   background: rgb(var(--param-accent, 124, 92, 252));
+  width: var(--slider-pct, 0%);
 }
 
 .slider-thumb {
@@ -554,6 +555,7 @@ body::before {
   box-shadow: 0 0 0 2px rgb(var(--param-accent, 124, 92, 252));
   transform: translate(-50%, -50%);
   top: 50%;
+  left: var(--slider-pct, 0%);
   transition: transform 0.15s;
   pointer-events: none;
 }
@@ -684,7 +686,7 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding: 40px 0 60px;
+  padding: 40px 0 0;
 }
 
 .hero {
@@ -974,9 +976,8 @@ body::before {
 
 .site-footer {
   margin: 12px -12px 0;
-  padding: 16px 12px;
+  padding: 4px 12px 16px;
   text-align: center;
-  border-top: 1px solid var(--border);
 }
 
 .footer-text {
@@ -1102,7 +1103,7 @@ body::before {
 
   .score-author { font-size: 12px; }
   .sticky-header { padding: 10px 12px 8px; gap: 8px; }
-  .scrollable-content { gap: 12px; padding-bottom: 24px; }
+  .scrollable-content { gap: 12px; }
 
   .param-slider { padding: 10px 12px; }
   .param-header { margin-bottom: 8px; }
@@ -1117,7 +1118,7 @@ body::before {
   .btn { padding: 6px 10px; font-size: 12px; }
   .btn-reset { padding: 8px 8px; font-size: 10px; }
 
-  .home-page { gap: 28px; padding: 24px 0 40px; }
+  .home-page { gap: 28px; padding: 24px 0 0; }
   .hero-highlight { font-size: 42px; }
   .hero-sub { font-size: 15px; }
   .hero-desc { font-size: 13px; }

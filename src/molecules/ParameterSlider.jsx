@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useLayoutEffect } from 'preact/hooks'
+import { useRef } from 'preact/hooks'
 import { WeightBadge } from '../atoms/WeightBadge'
 import { accentColor } from '../utils/color'
 
@@ -9,47 +9,30 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
   const max = steps[steps.length - 1]?.value ?? 1
   const rootRef = useRef(null)
   const trackRef = useRef(null)
-  const fillRef = useRef(null)
-  const glowRef = useRef(null)
-  const thumbRef = useRef(null)
-  const valueRef = useRef(null)
   const stepsRef = useRef(null)
+  const valueRef = useRef(null)
   const originRef = useRef(null)
   const dragging = useRef(false)
-  const [localValue, setLocalValue] = useState(value)
+  const pressValRef = useRef(value)
 
-  const pct = ((localValue - min) / (max - min)) * 100
+  const v2p = (v) => ((v - min) / (max - min)) * 100
 
-  const syncVisualPct = (p, val, cb) => {
+  const setVisual = (v) => {
+    const p = v2p(v)
     const s = p + '%'
-    if (fillRef.current) fillRef.current.style.width = s
-    if (glowRef.current) glowRef.current.style.width = s
-    if (thumbRef.current) thumbRef.current.style.left = s
-    if (rootRef.current) rootRef.current.style.setProperty('--param-accent', accentColor(val ?? min + (p / 100) * (max - min)))
-    const v = val ?? min + (p / 100) * (max - min)
-    if (valueRef.current && !isBinary) valueRef.current.textContent = v.toFixed(2)
-    if (stepsRef.current) {
-      const kids = stepsRef.current.children
-      let best = -1, bestDist = Infinity
-      for (let i = 0; i < kids.length; i++) {
-        const sv = steps[i].value
-        const d = Math.abs(sv - v)
-        if (d < bestDist) { bestDist = d; best = i }
-      }
-      for (let i = 0; i < kids.length; i++) kids[i].classList.toggle('active', i === best)
+    rootRef.current.style.setProperty('--slider-pct', s)
+    rootRef.current.style.setProperty('--param-accent', accentColor(v))
+    if (!isBinary) valueRef.current.textContent = v.toFixed(2)
+    const kids = stepsRef.current.children
+    let best = -1, bestDist = Infinity
+    for (let i = 0; i < kids.length; i++) {
+      const d = Math.abs(steps[i].value - v)
+      if (d < bestDist) { bestDist = d; best = i }
     }
-    if (cb) cb(v)
+    for (let i = 0; i < kids.length; i++) kids[i].classList.toggle('active', i === best)
   }
 
-  const syncVisual = (t, val, cb) => syncVisualPct(Math.round(t * 10000) / 100, val, cb)
-
-  useLayoutEffect(() => {
-    syncVisualPct(pct, localValue)
-  }, [pct, localValue])
-
-  const handleEnable = () => {
-    if (excluded) onToggleExcluded()
-  }
+  const commitVal = (v) => isBinary ? (v >= (min + max) / 2 ? max : min) : Math.round(v * 100) / 100
 
   const tFromX = (clientX) => {
     const rect = trackRef.current.getBoundingClientRect()
@@ -59,9 +42,10 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
   const handlePointerDown = (e) => {
     originRef.current = { x: e.clientX, y: e.clientY }
     dragging.current = false
-    handleEnable()
-    const t0 = tFromX(e.clientX)
-    syncVisual(t0, min + t0 * (max - min))
+    if (excluded) onToggleExcluded()
+    const v = min + tFromX(e.clientX) * (max - min)
+    pressValRef.current = v
+    setVisual(v)
     trackRef.current.setPointerCapture(e.pointerId)
   }
 
@@ -75,70 +59,71 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
       if (adx + ady < 8) return
       if (ady > adx) {
         originRef.current = null
-        try { trackRef.current?.releasePointerCapture(e.pointerId) } catch (_) {}
+        setVisual(value)
+        try { trackRef.current?.releasePointerCapture(e.pointerId) } catch {}
         return
       }
       dragging.current = true
     }
 
-    const tm = tFromX(e.clientX)
-    const vm = min + tm * (max - min)
-    syncVisual(tm, vm, (v) => onChange(param.key, isBinary ? (v >= (min + max) / 2 ? max : min) : Math.round(v * 100) / 100))
+    const v = min + tFromX(e.clientX) * (max - min)
+    setVisual(v)
+    onChange(param.key, commitVal(v))
   }
 
   const handlePointerUp = (e) => {
-    if (!originRef.current && !dragging.current) return
     originRef.current = null
-    if (!dragging.current) return
+    if (!dragging.current) {
+      const final = commitVal(pressValRef.current)
+      setVisual(final)
+      onChange(param.key, final)
+      try { trackRef.current?.releasePointerCapture(e.pointerId) } catch {}
+      return
+    }
     dragging.current = false
-    const t = tFromX(e.clientX)
-    const val = min + t * (max - min)
-    const final = isBinary ? (val >= 0.5 ? max : min) : Math.round(val * 100) / 100
-    setLocalValue(final)
+    const v = min + tFromX(e.clientX) * (max - min)
+    const final = commitVal(v)
+    setVisual(final)
     onChange(param.key, final)
-    try { trackRef.current?.releasePointerCapture(e.pointerId) } catch (_) {}
+    try { trackRef.current?.releasePointerCapture(e.pointerId) } catch {}
   }
 
-  const closestStep = useMemo(
-    () => {
-      if (isBinary && localValue === 0.5) return null
-      return steps.reduce((a, b) =>
-        Math.abs(b.value - localValue) < Math.abs(a.value - localValue) ? b : a
-      )
-    },
-    [isBinary, steps, localValue]
-  )
+  const handlePointerCancel = () => {
+    dragging.current = false
+    setVisual(value)
+  }
 
   const handleStepClick = (s) => {
-    handleEnable()
-    setLocalValue(s.value)
+    if (excluded) onToggleExcluded()
+    setVisual(s.value)
     onChange(param.key, s.value)
   }
 
+  const pct = v2p(value)
+  const closestStep = isBinary && value === 0.5
+    ? null
+    : steps.reduce((a, b) => Math.abs(b.value - value) < Math.abs(a.value - value) ? b : a)
+
   return (
-    <div ref={rootRef} class={`param-slider ${excluded ? 'param-excluded' : ''}`}>
+    <div
+      ref={rootRef}
+      class={`param-slider ${excluded ? 'param-excluded' : ''}`}
+      style={`--slider-pct:${pct}%;--param-accent:${accentColor(value)}`}
+    >
       <div class="param-header">
         <label class="param-checkbox">
-          <input
-            type="checkbox"
-            checked={!excluded}
-            onInput={onToggleExcluded}
-          />
+          <input type="checkbox" checked={!excluded} onInput={onToggleExcluded} />
         </label>
         <span class="param-label">{param.emoji && <span class="param-emoji">{param.emoji}</span>}{param.label}</span>
         <WeightBadge weight={param.weight} />
         <span class="param-value" ref={valueRef}>
-          {isBinary ? (closestStep?.label ?? '\u2014') : localValue.toFixed(2)}
+          {isBinary ? (closestStep?.label ?? '\u2014') : value.toFixed(2)}
         </span>
       </div>
       {isBinary ? (
         <div class="binary-options">
           {steps.map(s => (
-            <button
-              key={s.value}
-              class={`binary-btn ${s.value === value ? 'active' : ''}`}
-              onClick={() => handleStepClick(s)}
-            >
+            <button key={s.value} class={`binary-btn ${s.value === value ? 'active' : ''}`} onClick={() => handleStepClick(s)}>
               {s.label}
             </button>
           ))}
@@ -151,13 +136,13 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
-            onPointerCancel={() => { dragging.current = false; setLocalValue(value) }}
+            onPointerCancel={handlePointerCancel}
           >
             <div class="slider-track">
-              <div class="slider-glow" ref={glowRef}></div>
-              <div class="slider-fill" ref={fillRef}></div>
+              <div class="slider-glow"></div>
+              <div class="slider-fill"></div>
             </div>
-            <div class="slider-thumb" ref={thumbRef}></div>
+            <div class="slider-thumb"></div>
           </div>
           <div class="step-labels" ref={stepsRef}>
             {steps.map(s => (
