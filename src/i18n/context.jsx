@@ -10,6 +10,10 @@ const LOAD_LOCALE = {
   es: () => import('./es'),
   hi: () => import('./hi'),
   ar: () => import('./ar'),
+  ko: () => import('./ko'),
+  it: () => import('./it'),
+  pt: () => import('./pt'),
+  fr: () => import('./fr'),
 }
 
 const RTL_LOCALES = new Set(['ar'])

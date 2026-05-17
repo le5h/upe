@@ -1,6 +1,8 @@
 import { useState, useCallback, useMemo, useRef } from 'preact/hooks'
 import config from '../config/evaluation.json'
 
+const STORED_AUTHOR_KEY = 'eval_author'
+
 function computeSteps(labels) {
   return labels.map((label, i, arr) => ({
     value: arr.length > 1 ? i / (arr.length - 1) : 0.5,
@@ -97,9 +99,9 @@ export function useEvaluation({ translateParam } = {}) {
 
   const [type, setTypeState] = useState(initialType)
   const [name, setNameState] = useState(initialName)
-  const [author, setAuthorState] = useState('')
-  const [sharedAuthor, setSharedAuthor] = useState(initialAuthor)
-  const [showByField, setShowByField] = useState(false)
+  const [author, setAuthorState] = useState(initialAuthor ? '' : (localStorage.getItem(STORED_AUTHOR_KEY) || ''))
+  const [sharedAuthor, setSharedAuthor] = useState(initialAuthor || '')
+  const [showByField, setShowByField] = useState(!initialAuthor)
   const [values, setValues] = useState(initialValues)
   const [excluded, setExcluded] = useState(initialExcluded)
 
@@ -108,9 +110,9 @@ export function useEvaluation({ translateParam } = {}) {
     const p = parseHash(hash)
     setTypeState(p.type)
     setNameState(p.name)
-    setAuthorState(p.author || '')
-    setSharedAuthor('')
-    setShowByField(true)
+    setAuthorState(p.author ? '' : (localStorage.getItem(STORED_AUTHOR_KEY) || ''))
+    setSharedAuthor(p.author || '')
+    setShowByField(!p.author)
     setValues(p.values)
     setExcluded(p.excluded)
   }, [])
@@ -126,24 +128,32 @@ export function useEvaluation({ translateParam } = {}) {
     const newParams = resolveParams(newType)
     setValues(Object.fromEntries(newParams.map(p => [p.key, defaultForParam(p)])))
     setExcluded(new Set(newParams.map(p => p.key)))
+    setSharedAuthor('')
+    setShowByField(true)
+    setAuthorState(localStorage.getItem(STORED_AUTHOR_KEY) || '')
   }, [])
 
   const setName = useCallback((n) => {
     setNameState(n)
+    setShowByField(true)
+    setSharedAuthor('')
   }, [])
 
   const setAuthor = useCallback((a) => {
     setAuthorState(a)
     setSharedAuthor('')
+    localStorage.setItem(STORED_AUTHOR_KEY, a)
   }, [])
 
   const setParamValue = useCallback((key, val) => {
     setShowByField(true)
+    setSharedAuthor('')
     setValues(prev => ({ ...prev, [key]: val }))
   }, [])
 
   const toggleExcluded = useCallback((key) => {
     setShowByField(true)
+    setSharedAuthor('')
     setExcluded(prev => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key)

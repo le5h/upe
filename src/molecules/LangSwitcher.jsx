@@ -2,13 +2,17 @@ import { useI18n } from '../i18n/context'
 
 const LOCALE_NAMES = {
   en: 'English',
-  ru: 'Русский',
   de: 'Deutsch',
-  ja: '日本語',
-  zh: '中文',
+  fr: 'Français',
   es: 'Español',
+  it: 'Italiano',
+  pt: 'Português',
+  zh: '中文',
   hi: 'हिन्दी',
   ar: 'العربية',
+  ko: '한국어',
+  ja: '日本語',
+  ru: 'Русский',
 }
 
 export function LangSwitcher() {
