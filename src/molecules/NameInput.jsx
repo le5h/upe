@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { useI18n } from '../i18n/context'
-import { search } from '../hooks/useStorage'
-import config from '../config/evaluation.json'
 
-export function NameInput({ value, onChange, inputRef, onRestore }) {
-  const { t } = useI18n()
+function wikiSearch(lang, q) {
+  return fetch(`https://${lang}.wikipedia.org/w/api.php?action=opensearch&limit=8&namespace=0&format=json&origin=*&search=${encodeURIComponent(q)}`)
+    .then(r => r.ok ? r.json() : null)
+    .then(d => d?.[1] || [])
+}
+
+export function NameInput({ value, onChange, inputRef }) {
+  const { t, locale } = useI18n()
   const [suggestions, setSuggestions] = useState([])
   const [open, setOpen] = useState(false)
   const timer = useRef(null)
@@ -19,13 +23,19 @@ export function NameInput({ value, onChange, inputRef, onRestore }) {
       return
     }
     if (!userInteracted.current) return
-    timer.current = setTimeout(() => {
-      const results = search(value)
-      setSuggestions(results)
-      setOpen(results.length > 0)
+    timer.current = setTimeout(async () => {
+      const q = value.trim()
+      const en = await wikiSearch('en', q)
+      if (en.length > 0) { setSuggestions(en); setOpen(true); return }
+      if (locale !== 'en') {
+        const loc = await wikiSearch(locale, q)
+        setSuggestions(loc); setOpen(loc.length > 0)
+      } else {
+        setSuggestions([]); setOpen(false)
+      }
     }, 200)
     return () => clearTimeout(timer.current)
-  }, [value])
+  }, [value, locale])
 
   useEffect(() => {
     const onClick = (e) => {
@@ -37,9 +47,9 @@ export function NameInput({ value, onChange, inputRef, onRestore }) {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
-  const pick = (item) => {
+  const pick = (title) => {
     setOpen(false)
-    onRestore(item.hash)
+    onChange(title)
   }
 
   return (
@@ -54,11 +64,9 @@ export function NameInput({ value, onChange, inputRef, onRestore }) {
       />
       {open && (
         <ul class="suggestions-dropdown">
-          {suggestions.map(item => (
-            <li key={item.key} onClick={() => pick(item)} class="suggestion-item">
-              <span class="suggestion-type">{config.types[item.type]?.label || item.type}</span>
-              <span class="suggestion-name">{item.name}</span>
-              {item.author && <span class="suggestion-by">{item.author}</span>}
+          {suggestions.map(title => (
+            <li key={title} onClick={() => pick(title)} class="suggestion-item">
+              <span class="suggestion-name">{title}</span>
             </li>
           ))}
         </ul>
