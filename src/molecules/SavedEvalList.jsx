@@ -21,7 +21,7 @@ export function SavedEvalList({ onSelect }) {
 
   return (
     <section class="saved-list">
-      <h2 class="saved-list-heading">{'\u{1F4BE}'} Saved evaluations</h2>
+      <h2 class="saved-list-heading">{'\u{1F4BE}'} {t('Saved evaluations')}</h2>
       <div class="saved-list-scroll">
         {saved.map(item => (
           <button key={item.key} class="saved-card" onClick={() => onSelect(item.hash)}>

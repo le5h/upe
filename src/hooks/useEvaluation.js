@@ -62,7 +62,7 @@ function parseHash(hash) {
     if (sep === -1) continue
     const k = seg.slice(0, sep)
     const v = seg.slice(sep + 1)
-    if (k === '_by') {
+    if (k === 'by') {
       authorOut = v
     } else if (k && v !== undefined && config.paramDefs[k]) {
       values[k] = parseFloat(v)
@@ -83,7 +83,7 @@ function parseHash(hash) {
 function buildUrl(type, name, values, excluded, params, author) {
   let hash = type
   if (name) hash += ':' + encodeURIComponent(name.replace(/ /g, '_'))
-  if (author) hash += ';_by:' + encodeURIComponent(author)
+  if (author) hash += ';by:' + encodeURIComponent(author)
   for (const p of params || []) {
     if (excluded?.has(p.key)) continue
     const v = values?.[p.key]
@@ -194,6 +194,24 @@ export function useEvaluation({ translateParam } = {}) {
     setExcluded(new Set(ps.map(p => p.key)))
   }, [type])
 
+  const clearShared = useCallback(() => {
+    _skipPersistRef.current = true
+    sharedAuthorRef.current = ''
+    setSharedAuthor('')
+    setShowByField(true)
+    setAuthorState(localStorage.getItem(STORED_AUTHOR_KEY) || '')
+    const saved = nameRef.current && loadByTypeAndName(type, nameRef.current)
+    if (saved?.hash) {
+      const p = parseHash(saved.hash)
+      setValues(p.values)
+      setExcluded(p.excluded)
+    } else {
+      const ps = resolveParams(type)
+      setValues(Object.fromEntries(ps.map(p => [p.key, defaultForParam(p)])))
+      setExcluded(new Set(ps.map(p => p.key)))
+    }
+  }, [type])
+
   const totalScore = useMemo(() => {
     let weightedSum = 0
     let totalWeight = 0
@@ -206,7 +224,7 @@ export function useEvaluation({ translateParam } = {}) {
     return totalWeight > 0 ? weightedSum / totalWeight : 0
   }, [params, values, excluded])
 
-  return { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, _skipPersistRef }
+  return { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, clearShared, _skipPersistRef }
 }
 
 function scoreFromHash(hash) {

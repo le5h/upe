@@ -1,5 +1,6 @@
 import config from '../config/evaluation.json'
 import { useI18n } from '../i18n/context'
+import { TYPE_ICONS } from '../icons'
 
 export function TypeSelector({ value, onChange }) {
   const { t } = useI18n()
@@ -12,6 +13,7 @@ export function TypeSelector({ value, onChange }) {
             style={{ viewTransitionName: 'type-' + key }}
             onClick={() => onChange(key)}
           >
+          {TYPE_ICONS[key] && <span class="type-icon">{TYPE_ICONS[key]}</span>}
           {t(type.label)}
         </button>
       ))}

@@ -10,9 +10,9 @@ function loadItem(key) {
   const type = rest.slice(0, colonIdx)
   const name = rest.slice(colonIdx + 1)
   let hash = localStorage.getItem(key)
-  const byMatch = hash?.match(/(?:^|;)_by:([^;]+)/)
+  const byMatch = hash?.match(/(?:^|;)by:([^;]+)/)
   const author = byMatch ? decodeURIComponent(byMatch[1]) : ''
-  if (byMatch) hash = hash.replace(/;_by:[^;]+/, '')
+  if (byMatch) hash = hash.replace(/;by:[^;]+/, '')
   return { key, name, hash, type, author }
 }
 

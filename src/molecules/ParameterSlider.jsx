@@ -23,13 +23,15 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
     rootRef.current.style.setProperty('--slider-pct', s)
     rootRef.current.style.setProperty('--param-accent', accentColor(v))
     if (!isBinary) valueRef.current.textContent = v.toFixed(2)
-    const kids = stepsRef.current.children
-    let best = -1, bestDist = Infinity
-    for (let i = 0; i < kids.length; i++) {
-      const d = Math.abs(steps[i].value - v)
-      if (d < bestDist) { bestDist = d; best = i }
+    if (stepsRef.current) {
+      const kids = stepsRef.current.children
+      let best = -1, bestDist = Infinity
+      for (let i = 0; i < kids.length; i++) {
+        const d = Math.abs(steps[i].value - v)
+        if (d < bestDist) { bestDist = d; best = i }
+      }
+      for (let i = 0; i < kids.length; i++) kids[i].classList.toggle('active', i === best)
     }
-    for (let i = 0; i < kids.length; i++) kids[i].classList.toggle('active', i === best)
   }
 
   const commitVal = (v) => isBinary ? (v >= (min + max) / 2 ? max : min) : Math.round(v * 100) / 100

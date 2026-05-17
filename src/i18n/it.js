@@ -141,5 +141,6 @@ export default {
   "seo.useCase2.desc": "Confronta giochi tra generi con criteri coerenti. Valuta Gameplay, Atmosfera, Ottimizzazione e Rigiocabilità sulla stessa scala.",
   "seo.useCase3.desc": "Crea punteggi trasparenti e condivisibili che il tuo pubblico può esaminare. Ogni parametro, peso e valore è visibile nell'URL.",
   "pageTitle": "UPE — Valutatore Parametrico Universale",
-  "metaDesc": "Valuta film, serie e giochi con parametri ponderati. Niente sensazioni vaghe — solo valutazioni strutturate e condivisibili."
+  "metaDesc": "Valuta film, serie e giochi con parametri ponderati. Niente sensazioni vaghe — solo valutazioni strutturate e condivisibili.",
+  "Saved evaluations": "Valutazioni salvate"
 }

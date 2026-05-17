@@ -27,8 +27,8 @@ export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sha
   }
 
   return (
-    <div class="score-summary">
-      <div class="score-name-row">
+    <div class="score-summary" style={`--param-accent:${scoreColor}`}>
+      <div class="flex-row">
         <NameInput inputRef={nameInputRef} value={name} onChange={setName} onRestore={onRestore} />
       </div>
       <div class="score-byline">

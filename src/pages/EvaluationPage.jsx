@@ -13,7 +13,7 @@ import { remove } from '../hooks/useStorage'
 export function EvaluationPage({ onHome }) {
   const { t, translateParam } = useI18n()
   const evalState = useEvaluation({ translateParam })
-  const { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, _skipPersistRef } = evalState
+  const { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, clearShared, _skipPersistRef } = evalState
 
   useUrlSync({
     type, name, author,
@@ -27,9 +27,13 @@ export function EvaluationPage({ onHome }) {
   })
 
   const handleReset = useCallback(() => {
-    if (name.trim()) remove(type, name)
-    resetAll()
-  }, [type, name, resetAll])
+    if (sharedAuthor) {
+      clearShared()
+    } else {
+      if (name.trim()) remove(type, name)
+      resetAll()
+    }
+  }, [type, name, sharedAuthor, resetAll, clearShared])
   const nameInputRef = useRef(null)
 
   useEffect(() => {
@@ -37,7 +41,7 @@ export function EvaluationPage({ onHome }) {
   }, [type])
 
   return (
-    <div class="flex-col">
+    <div class="evaluation-page flex-col">
       <div class="sticky-header">
         <div class="header-top">
           <button class="btn-home" onClick={onHome} title={t('Home')}>&#8592;</button>

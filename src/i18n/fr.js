@@ -141,5 +141,6 @@ export default {
   "seo.useCase2.desc": "Comparez des jeux de genres différents avec des critères cohérents. Évaluez le Gameplay, l'Atmosphère, l'Optimisation et la Rejouabilité sur la même échelle.",
   "seo.useCase3.desc": "Produisez des scores transparents et partageables que votre public peut inspecter. Chaque paramètre, poids et valeur est visible dans l'URL.",
   "pageTitle": "UPE — Évaluateur Paramétrique Universel",
-  "metaDesc": "Évaluez films, séries et jeux avec des paramètres pondérés. Pas d'impressions vagues — seulement des évaluations structurées et partageables."
+  "metaDesc": "Évaluez films, séries et jeux avec des paramètres pondérés. Pas d'impressions vagues — seulement des évaluations structurées et partageables.",
+  "Saved evaluations": "Évaluations enregistrées"
 }
