@@ -48,7 +48,7 @@ export function EvaluationPage({ onHome }) {
           <LangSwitcher />
         </div>
         <TypeSelector value={type} onChange={setType} />
-        <ScoreSummary totalScore={totalScore} name={name} setName={setName} author={author} setAuthor={setAuthor} sharedAuthor={sharedAuthor} showByField={showByField} onReset={handleReset} nameInputRef={nameInputRef} onRestore={restore} />
+        <ScoreSummary totalScore={totalScore} name={name} setName={setName} author={author} setAuthor={setAuthor} sharedAuthor={sharedAuthor} showByField={showByField} onReset={handleReset} nameInputRef={nameInputRef} onRestore={restore} type={type} params={params} values={values} excluded={excluded} />
       </div>
 
       <div class="scrollable-content">

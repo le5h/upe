@@ -9,6 +9,7 @@ export function NameInput({ value, onChange, inputRef, onRestore }) {
   const [open, setOpen] = useState(false)
   const timer = useRef(null)
   const wrapRef = useRef(null)
+  const userInteracted = useRef(false)
 
   useEffect(() => {
     clearTimeout(timer.current)
@@ -17,6 +18,7 @@ export function NameInput({ value, onChange, inputRef, onRestore }) {
       setOpen(false)
       return
     }
+    if (!userInteracted.current) return
     timer.current = setTimeout(() => {
       const results = search(value)
       setSuggestions(results)
@@ -46,7 +48,7 @@ export function NameInput({ value, onChange, inputRef, onRestore }) {
         ref={inputRef}
         type="text"
         value={value}
-        onInput={e => onChange(e.currentTarget.value)}
+        onInput={e => { userInteracted.current = true; onChange(e.currentTarget.value) }}
         placeholder={t('Name your subject...')}
         class="score-name"
       />

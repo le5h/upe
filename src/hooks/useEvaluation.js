@@ -31,7 +31,6 @@ function decodeSafe(s) {
 
 function parseHash(hash) {
   hash = (hash || location.hash.slice(1)).replace(/\|/g, ';').replace(/^#/, '')
-  const author = ''
   if (!hash) {
     const params = resolveParams('movie')
     return {
@@ -54,7 +53,7 @@ function parseHash(hash) {
   }
   const params = resolveParams(type)
   const values = {}
-  let authorOut = author
+  let authorOut = ''
 
   for (let i = 1; i < segs.length; i++) {
     const seg = decodeSafe(segs[i])

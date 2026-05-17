@@ -1,9 +1,7 @@
 import { useMemo } from 'preact/hooks'
 import { listAll } from '../hooks/useStorage'
 import { scoreFromHash } from '../hooks/useEvaluation'
-import config from '../config/evaluation.json'
-
-const icons = { movie: '\u{1F3AC}', series: '\u{1F4FA}', game: '\u{1F3AE}' }
+import { TYPE_ICONS } from '../icons'
 
 export function SavedEvalList({ onSelect }) {
   const saved = useMemo(() => {
@@ -21,7 +19,7 @@ export function SavedEvalList({ onSelect }) {
       <div class="saved-list-scroll">
         {saved.map(item => (
           <button key={item.key} class="saved-card" onClick={() => onSelect(item.hash)}>
-            <span class="saved-card-type">{icons[item.type] || ''}</span>
+            <span class="saved-card-type">{TYPE_ICONS[item.type] || ''}</span>
             <span class="saved-card-info">
               <span class="saved-card-name">{item.name}</span>
               {item.author && <span class="saved-card-by">{item.author}</span>}

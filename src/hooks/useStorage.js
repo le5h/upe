@@ -9,9 +9,10 @@ function loadItem(key) {
   if (colonIdx === -1) return null
   const type = rest.slice(0, colonIdx)
   const name = rest.slice(colonIdx + 1)
-  const hash = localStorage.getItem(key)
+  let hash = localStorage.getItem(key)
   const byMatch = hash?.match(/(?:^|;)_by:([^;]+)/)
   const author = byMatch ? decodeURIComponent(byMatch[1]) : ''
+  if (byMatch) hash = hash.replace(/;_by:[^;]+/, '')
   return { key, name, hash, type, author }
 }
 
@@ -55,9 +56,9 @@ export function useStorageSync({ type, name, author, values, excluded, params, s
       skipRef.current = false
       return
     }
-    const { type: t, name: n, author: a, params: p } = ref.current
+    const { type: t, name: n, params: p } = ref.current
     if (!n || !n.trim()) return
-    const hash = buildUrl(t, n, values, excluded, p, a).replace(/^#/, '')
+    const hash = buildUrl(t, n, values, excluded, p, '').replace(/^#/, '')
     save(t, n, hash)
   }, [values, excluded])
 }

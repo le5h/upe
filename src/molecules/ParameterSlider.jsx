@@ -1,14 +1,16 @@
 import { useMemo } from 'preact/hooks'
 import { WeightBadge } from '../atoms/WeightBadge'
 
+const ACCENT_STOPS = [
+  [0, [239, 68, 68]],
+  [0.25, [249, 115, 22]],
+  [0.5, [52, 211, 153]],
+  [0.75, [59, 130, 246]],
+  [1, [124, 92, 252]],
+]
+
 function accentColor(t) {
-  const stops = [
-    [0, [239, 68, 68]],
-    [0.25, [249, 115, 22]],
-    [0.5, [52, 211, 153]],
-    [0.75, [59, 130, 246]],
-    [1, [124, 92, 252]],
-  ]
+  const stops = ACCENT_STOPS
   for (let i = 1; i < stops.length; i++) {
     if (t <= stops[i][0]) {
       const lo = stops[i - 1], hi = stops[i]
