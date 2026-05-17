@@ -28,47 +28,47 @@
     "movie": {
       "label": "Movie",
       "parameters": [
-        { "key": "lk", "weight": 2.0 },
+        { "key": "lk", "weight": 1.5 },
         { "key": "st", "weight": 1.0 },
-        { "key": "ac", "weight": 0.9 },
-        { "key": "ci", "weight": 0.8 },
-        { "key": "fn", "weight": 0.8 },
-        { "key": "vs", "weight": 0.8 },
+        { "key": "fn", "weight": 1.0 },
+        { "key": "ci", "weight": 0.9 },
+        { "key": "vs", "weight": 0.9 },
+        { "key": "ac", "weight": 0.8 },
+        { "key": "mu", "weight": 0.8 },
         { "key": "af", "weight": 0.7 },
         { "key": "fd", "weight": 0.7 },
-        { "key": "mu", "weight": 0.7 },
-        { "key": "dl", "weight": 0.6 }
+        { "key": "dl", "weight": 0.7 }
       ]
     },
     "series": {
       "label": "Series",
       "parameters": [
-        { "key": "lk", "weight": 2.0 },
+        { "key": "lk", "weight": 1.5 },
         { "key": "st", "weight": 1.0 },
-        { "key": "pc", "weight": 1.0 },
-        { "key": "cd", "weight": 0.9 },
-        { "key": "ac", "weight": 0.8 },
-        { "key": "ch", "weight": 0.8 },
-        { "key": "mu", "weight": 0.7 },
+        { "key": "ch", "weight": 0.9 },
+        { "key": "mu", "weight": 0.9 },
+        { "key": "vs", "weight": 0.8 },
+        { "key": "pc", "weight": 0.8 },
+        { "key": "cd", "weight": 0.8 },
+        { "key": "ac", "weight": 0.7 },
         { "key": "af", "weight": 0.7 },
-        { "key": "vs", "weight": 0.6 },
         { "key": "fn", "weight": 0.5 }
       ]
     },
     "game": {
       "label": "Game",
       "parameters": [
-        { "key": "lk", "weight": 2.0 },
+        { "key": "lk", "weight": 1.5 },
         { "key": "gp", "weight": 1.0 },
-        { "key": "st", "weight": 0.9 },
-        { "key": "vs", "weight": 0.8 },
-        { "key": "at", "weight": 0.8 },
-        { "key": "op", "weight": 0.7 },
-        { "key": "rp", "weight": 0.7 },
-        { "key": "mu", "weight": 0.6 },
-        { "key": "sd", "weight": 0.6 },
-        { "key": "fu", "weight": 0.7 },
-        { "key": "af", "weight": 0.6 }
+        { "key": "fu", "weight": 1.0 },
+        { "key": "vs", "weight": 0.9 },
+        { "key": "at", "weight": 0.9 },
+        { "key": "mu", "weight": 0.9 },
+        { "key": "op", "weight": 0.9 },
+        { "key": "st", "weight": 0.8 },
+        { "key": "rp", "weight": 0.8 },
+        { "key": "sd", "weight": 0.7 },
+        { "key": "af", "weight": 0.7 }
       ]
     }
   }
