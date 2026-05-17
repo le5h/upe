@@ -4,6 +4,7 @@ import { NameInput } from './NameInput'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
 import { buildUrl } from '../hooks/useEvaluation'
+import { accentColor } from '../utils/color'
 
 export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sharedAuthor, showByField, onReset, nameInputRef, onRestore, type, params, values, excluded }) {
   const { t } = useI18n()
@@ -13,6 +14,7 @@ export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sha
   const stars = Math.round(totalScore * 5)
   const [copied, setCopied] = useState(false)
   const timeout = useRef(null)
+  const scoreColor = accentColor(totalScore)
 
   const share = async () => {
     try {
@@ -47,14 +49,14 @@ export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sha
       </div>
       <div className="flex gap space-between">
         <div class="score-digits">
-          <span class="score-value">{formatted}</span>
-          <span class="score-stars">{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
+          <span class="score-value" style={`color: rgb(${scoreColor})`}>{formatted}</span>
+          <span class="score-stars" style={`color: rgb(${scoreColor})`}>{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
           <span class="score-variant">{outOf10}/10</span>
         </div>
         <button onClick={onReset} class="btn btn-sm btn-reset" title={t('Reset')}>{'\u{1F504}'} <Trans>Reset</Trans></button>
       </div>
       <div class="score-bar-wrap">
-        <ScoreBar fraction={totalScore} />
+        <ScoreBar fraction={totalScore} color={scoreColor} />
       </div>
     </div>
   )

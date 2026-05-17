@@ -33,6 +33,11 @@ export function search(query) {
   return listAll().filter(item => item.name.toLowerCase().includes(q))
 }
 
+export function loadByTypeAndName(type, name) {
+  if (!name || !name.trim()) return null
+  return loadItem(PREFIX + type + ':' + name.trim())
+}
+
 export function save(type, name, hash) {
   if (!name || !name.trim()) return
   localStorage.setItem(PREFIX + type + ':' + name.trim(), hash)

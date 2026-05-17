@@ -1,14 +1,20 @@
 import { useMemo } from 'preact/hooks'
 import { listAll } from '../hooks/useStorage'
-import { scoreFromHash } from '../hooks/useEvaluation'
+import { scoreFromHash, detailsFromHash } from '../hooks/useEvaluation'
+import { useI18n } from '../i18n/context'
 import { TYPE_ICONS } from '../icons'
 
 export function SavedEvalList({ onSelect }) {
+  const { t } = useI18n()
   const saved = useMemo(() => {
-    return listAll().map(item => ({
-      ...item,
-      score: scoreFromHash(item.hash),
-    }))
+    return listAll().map(item => {
+      const details = detailsFromHash(item.hash)
+      return {
+        ...item,
+        score: scoreFromHash(item.hash),
+        top: details.top,
+      }
+    })
   }, [])
 
   if (saved.length === 0) return null
@@ -22,7 +28,11 @@ export function SavedEvalList({ onSelect }) {
             <span class="saved-card-type">{TYPE_ICONS[item.type] || ''}</span>
             <span class="saved-card-info">
               <span class="saved-card-name">{item.name}</span>
-              {item.author && <span class="saved-card-by">{item.author}</span>}
+              <span class="saved-card-params">
+                {item.top.map(p => (
+                  <span key={p.key} class="saved-card-param">{p.emoji} {t(p.stepLabel)}</span>
+                ))}
+              </span>
             </span>
             <span class="saved-card-score">{Math.round(item.score * 100)}</span>
           </button>
