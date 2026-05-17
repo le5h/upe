@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'preact/hooks'
+import { useState, useCallback, useMemo, useRef } from 'preact/hooks'
 import config from '../config/evaluation.json'
 
 function computeSteps(labels) {
@@ -28,12 +28,14 @@ function decodeSafe(s) {
 }
 
 function parseHash(hash) {
-  hash = (hash || location.hash.slice(1)).replace(/\|/g, ';')
+  hash = (hash || location.hash.slice(1)).replace(/\|/g, ';').replace(/^#/, '')
+  const author = ''
   if (!hash) {
     const params = resolveParams('movie')
     return {
       type: 'movie',
       name: '',
+      author: '',
       values: Object.fromEntries(params.map(p => [p.key, defaultForParam(p)])),
       excluded: new Set(params.map(p => p.key)),
     }
@@ -50,6 +52,7 @@ function parseHash(hash) {
   }
   const params = resolveParams(type)
   const values = {}
+  let authorOut = author
 
   for (let i = 1; i < segs.length; i++) {
     const seg = decodeSafe(segs[i])
@@ -57,7 +60,9 @@ function parseHash(hash) {
     if (sep === -1) continue
     const k = seg.slice(0, sep)
     const v = seg.slice(sep + 1)
-    if (k && v !== undefined && config.paramDefs[k]) {
+    if (k === '_by') {
+      authorOut = v
+    } else if (k && v !== undefined && config.paramDefs[k]) {
       values[k] = parseFloat(v)
     }
   }
@@ -70,12 +75,13 @@ function parseHash(hash) {
     }
   }
 
-  return { type, name, values, excluded }
+  return { type, name, author: authorOut, values, excluded }
 }
 
-function buildUrl(type, name, values, excluded, params) {
+function buildUrl(type, name, values, excluded, params, author) {
   let hash = type
   if (name) hash += ':' + encodeURIComponent(name.replace(/ /g, '_'))
+  if (author) hash += ';_by:' + encodeURIComponent(author)
   for (const p of params || []) {
     if (excluded?.has(p.key)) continue
     const v = values?.[p.key]
@@ -85,12 +91,29 @@ function buildUrl(type, name, values, excluded, params) {
 }
 
 export function useEvaluation({ translateParam } = {}) {
-  const { type: initialType, name: initialName, values: initialValues, excluded: initialExcluded } = parseHash()
+  const _skipPersistRef = useRef(false)
+
+  const { type: initialType, name: initialName, author: initialAuthor, values: initialValues, excluded: initialExcluded } = parseHash()
 
   const [type, setTypeState] = useState(initialType)
   const [name, setNameState] = useState(initialName)
+  const [author, setAuthorState] = useState('')
+  const [sharedAuthor, setSharedAuthor] = useState(initialAuthor)
+  const [showByField, setShowByField] = useState(false)
   const [values, setValues] = useState(initialValues)
   const [excluded, setExcluded] = useState(initialExcluded)
+
+  const restore = useCallback((hash) => {
+    _skipPersistRef.current = true
+    const p = parseHash(hash)
+    setTypeState(p.type)
+    setNameState(p.name)
+    setAuthorState(p.author || '')
+    setSharedAuthor('')
+    setShowByField(true)
+    setValues(p.values)
+    setExcluded(p.excluded)
+  }, [])
 
   const params = useMemo(() => {
     const raw = resolveParams(type)
@@ -98,8 +121,8 @@ export function useEvaluation({ translateParam } = {}) {
   }, [type, translateParam])
 
   const setType = useCallback((newType) => {
+    _skipPersistRef.current = true
     setTypeState(newType)
-    setNameState('')
     const newParams = resolveParams(newType)
     setValues(Object.fromEntries(newParams.map(p => [p.key, defaultForParam(p)])))
     setExcluded(new Set(newParams.map(p => p.key)))
@@ -109,11 +132,18 @@ export function useEvaluation({ translateParam } = {}) {
     setNameState(n)
   }, [])
 
+  const setAuthor = useCallback((a) => {
+    setAuthorState(a)
+    setSharedAuthor('')
+  }, [])
+
   const setParamValue = useCallback((key, val) => {
+    setShowByField(true)
     setValues(prev => ({ ...prev, [key]: val }))
   }, [])
 
   const toggleExcluded = useCallback((key) => {
+    setShowByField(true)
     setExcluded(prev => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key)
@@ -123,6 +153,7 @@ export function useEvaluation({ translateParam } = {}) {
   }, [])
 
   const resetAll = useCallback(() => {
+    _skipPersistRef.current = true
     const ps = resolveParams(type)
     setValues(Object.fromEntries(ps.map(p => [p.key, defaultForParam(p)])))
     setExcluded(new Set(ps.map(p => p.key)))
@@ -140,7 +171,21 @@ export function useEvaluation({ translateParam } = {}) {
     return totalWeight > 0 ? weightedSum / totalWeight : 0
   }, [params, values, excluded])
 
-  return { type, setType, name, setName, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll }
+  return { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, _skipPersistRef }
 }
 
-export { buildUrl }
+function scoreFromHash(hash) {
+  const { type, values, excluded } = parseHash(hash)
+  const params = resolveParams(type)
+  let weightedSum = 0
+  let totalWeight = 0
+  for (const p of params) {
+    if (excluded.has(p.key)) continue
+    const v = values[p.key] ?? defaultForParam(p)
+    weightedSum += v * p.weight
+    totalWeight += p.weight
+  }
+  return totalWeight > 0 ? weightedSum / totalWeight : 0
+}
+
+export { buildUrl, parseHash, scoreFromHash }

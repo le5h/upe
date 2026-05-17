@@ -2,6 +2,7 @@ import config from '../config/evaluation.json'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
 import { LangSwitcher } from '../molecules/LangSwitcher'
+import { SavedEvalList } from '../molecules/SavedEvalList'
 
 const icons = { movie: '\u{1F3AC}', series: '\u{1F4FA}', game: '\u{1F3AE}' }
 
@@ -42,6 +43,8 @@ export function HomePage({ onSelect }) {
           </button>
         ))}
       </section>
+
+      <SavedEvalList onSelect={onSelect} />
 
       <section class="seo">
         <h2>{'\u{1F4CA}'} <Trans>What is UPE?</Trans></h2>

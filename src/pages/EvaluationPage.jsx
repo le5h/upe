@@ -4,22 +4,32 @@ import { ScoreSummary } from '../molecules/ScoreSummary'
 import { LangSwitcher } from '../molecules/LangSwitcher'
 import { useEvaluation } from '../hooks/useEvaluation'
 import { useUrlSync } from '../hooks/useUrlSync'
+import { useStorageSync } from '../hooks/useStorage'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
-import { useEffect, useRef } from 'preact/hooks'
+import { useCallback, useEffect, useRef } from 'preact/hooks'
+import { remove } from '../hooks/useStorage'
 
 export function EvaluationPage({ onHome }) {
   const { t, translateParam } = useI18n()
   const evalState = useEvaluation({ translateParam })
+  const { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, _skipPersistRef } = evalState
+
   useUrlSync({
-    type: evalState.type,
-    name: evalState.name,
-    values: evalState.values,
-    excluded: evalState.excluded,
-    params: evalState.params,
+    type, name, author,
+    values, excluded, params,
   })
 
-  const { type, setType, name, setName, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll } = evalState
+  useStorageSync({
+    type, name, author,
+    values, excluded, params,
+    skipRef: _skipPersistRef,
+  })
+
+  const handleReset = useCallback(() => {
+    if (name.trim()) remove(type, name)
+    resetAll()
+  }, [type, name, resetAll])
   const nameInputRef = useRef(null)
 
   useEffect(() => {
@@ -36,10 +46,9 @@ export function EvaluationPage({ onHome }) {
             <span class="title-sub"><Trans>Universal Parametric Evaluator</Trans> <small>v0.1</small></span>
           </h1>
           <LangSwitcher />
-          <TypeSelector value={type} onChange={setType} />
         </div>
-
-        <ScoreSummary totalScore={totalScore} name={name} setName={setName} onReset={resetAll} nameInputRef={nameInputRef} />
+        <TypeSelector value={type} onChange={setType} />
+        <ScoreSummary totalScore={totalScore} name={name} setName={setName} author={author} setAuthor={setAuthor} sharedAuthor={sharedAuthor} showByField={showByField} onReset={handleReset} nameInputRef={nameInputRef} onRestore={restore} />
       </div>
 
       <div class="scrollable-content">

@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'preact/hooks'
 import { buildUrl } from './useEvaluation'
 
-export function useUrlSync({ type, name, values, excluded, params }) {
+export function useUrlSync({ type, name, author, values, excluded, params }) {
   const first = useRef(true)
 
   useLayoutEffect(() => {
@@ -9,7 +9,7 @@ export function useUrlSync({ type, name, values, excluded, params }) {
       first.current = false
       return
     }
-    const url = buildUrl(type, name, values, excluded, params)
+    const url = buildUrl(type, name, values, excluded, params, author)
     window.history.replaceState(null, '', url)
-  }, [type, name, values, excluded, params])
+  }, [type, name, author, values, excluded, params])
 }

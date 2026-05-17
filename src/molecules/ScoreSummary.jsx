@@ -4,7 +4,7 @@ import { NameInput } from './NameInput'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
 
-export function ScoreSummary({ totalScore, name, setName, onReset, nameInputRef }) {
+export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sharedAuthor, showByField, onReset, nameInputRef, onRestore }) {
   const { t } = useI18n()
   const num = Math.round(totalScore * 100)
   const formatted = String(num).padStart(3, '0')
@@ -24,16 +24,10 @@ export function ScoreSummary({ totalScore, name, setName, onReset, nameInputRef 
 
   return (
     <div class="score-summary">
-      <div class="score-top">
-        <NameInput inputRef={nameInputRef} value={name} onChange={setName} />
-        <div class="score-actions">
-          <button onClick={share} class="btn btn-sm btn-share" title={t('Share')}>
-            {copied ? <Trans>Copied!</Trans> : <>{'\u{1F517}'} <Trans>Share</Trans></>}
-          </button>
-          <button onClick={onReset} class="btn btn-sm btn-reset" title={t('Reset')}>{'\u{1F504}'} <Trans>Reset</Trans></button>
-        </div>
+      <div class="score-name-row">
+        <NameInput inputRef={nameInputRef} value={name} onChange={setName} onRestore={onRestore} />
       </div>
-      <div class="score-mid">
+      <div class="score-bar-row">
         <div class="score-bar-wrap">
           <ScoreBar fraction={totalScore} />
         </div>
@@ -43,6 +37,26 @@ export function ScoreSummary({ totalScore, name, setName, onReset, nameInputRef 
           <span class="score-stars">{'★'.repeat(stars)}{'☆'.repeat(5 - stars)}</span>
         </div>
       </div>
+      {(showByField || sharedAuthor) && (
+      <div class="score-bottom">
+        <div class="score-byline">
+          {showByField && <input
+            type="text"
+            value={author}
+            onInput={e => setAuthor(e.currentTarget.value)}
+            placeholder={t('by: anonymous')}
+            class="score-author"
+          />}
+          {sharedAuthor && <span class="shared-by">{'\u{1F517}'} {sharedAuthor}</span>}
+        </div>
+        <div class="score-actions">
+          <button onClick={onReset} class="btn btn-sm btn-reset" title={t('Reset')}>{'\u{1F504}'} <Trans>Reset</Trans></button>
+          <button onClick={share} class="btn btn-sm btn-share" title={t('Share')}>
+            {copied ? <Trans>Copied!</Trans> : <>{'\u{1F517}'} <Trans>Share</Trans></>}
+          </button>
+        </div>
+      </div>
+      )}
     </div>
   )
 }
