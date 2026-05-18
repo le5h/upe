@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://universal-param-eval.netlify.app/sitemap.xml

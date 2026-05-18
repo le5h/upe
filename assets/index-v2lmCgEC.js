@@ -1,0 +1,1 @@
+import"./index-BmEXu-1j.js";import{i as e,n as t,r as n,t as r}from"./Home-BaR7-VqA.js";var i=[`en`,`ru`,`de`,`ja`,`zh`,`es`,`hi`,`ar`,`ko`,`it`,`pt`,`fr`,`pl`];function a(){return n(t,{locales:i,children:n(r,{})})}var o=sessionStorage.getItem(`redirect`);o&&(sessionStorage.removeItem(`redirect`),window.history.replaceState(null,``,o)),e(n(a,{}),document.getElementById(`app`));
