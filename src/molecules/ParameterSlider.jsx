@@ -1,8 +1,10 @@
 import { useRef } from 'preact/hooks'
 import { WeightBadge } from '../atoms/WeightBadge'
 import { accentColor } from '../utils/color'
+import { useI18n } from '../i18n/context'
 
 export function ParameterSlider({ param, value, onChange, excluded, onToggleExcluded }) {
+  const { rtl } = useI18n()
   const steps = param.steps || []
   const isBinary = steps.length === 2
   const min = steps[0]?.value ?? 0
@@ -38,7 +40,8 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
 
   const tFromX = (clientX) => {
     const rect = trackRef.current.getBoundingClientRect()
-    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
+    const t = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
+    return rtl ? 1 - t : t
   }
 
   const handlePointerDown = (e) => {

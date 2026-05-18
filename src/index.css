@@ -1055,8 +1055,8 @@ body::before {
 [dir="rtl"] .param-value { margin-left: 0; margin-right: auto; }
 [dir="rtl"] .slider-glow,
 [dir="rtl"] .slider-fill { transform-origin: 100% 50%; }
-[dir="rtl"] .slider-thumb { left: auto; right: calc(var(--slider-scale, 0) * 100%); }
-[dir="rtl"] .slider:hover .slider-thumb { left: auto; right: calc(var(--slider-scale, 0) * 100%); }
+[dir="rtl"] .slider-thumb { left: calc((1 - var(--slider-scale, 0)) * 100%); }
+[dir="rtl"] .slider:hover .slider-thumb { left: calc((1 - var(--slider-scale, 0)) * 100%); }
 [dir="rtl"] .score-bar-glow,
 [dir="rtl"] .score-bar-fill { background: linear-gradient(270deg, var(--accent), var(--green)); }
 [dir="rtl"] .li-icon { margin-right: 0; margin-left: var(--space-1); }

@@ -13,6 +13,7 @@ const LOCALE_NAMES = {
   ko: '한국어',
   ja: '日本語',
   ru: 'Русский',
+  pl: 'Polski',
 }
 
 export function LangSwitcher() {

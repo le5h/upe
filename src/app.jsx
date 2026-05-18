@@ -1,7 +1,7 @@
 import { I18nProvider } from './i18n/context'
 import { Home } from './pages/Home'
 
-const LOCALES = ['en', 'ru', 'de', 'ja', 'zh', 'es', 'hi', 'ar', 'ko', 'it', 'pt', 'fr']
+const LOCALES = ['en', 'ru', 'de', 'ja', 'zh', 'es', 'hi', 'ar', 'ko', 'it', 'pt', 'fr', 'pl']
 
 export function App() {
   return (
