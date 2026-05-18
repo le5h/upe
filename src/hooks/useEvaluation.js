@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo, useRef } from 'preact/hooks'
+import { useState, useCallback, useMemo, useRef, useEffect } from 'preact/hooks'
 import config from '../config/evaluation.json'
-import { loadByTypeAndName } from './useStorage'
+import { loadByTypeAndName, save, remove } from './useStorage'
 
 const STORED_AUTHOR_KEY = 'eval_author'
 
@@ -22,10 +22,6 @@ function resolveParams(type) {
   return typeDef.parameters.map(enrichParam)
 }
 
-function defaultForParam(_p) {
-  return 0.5
-}
-
 function decodeSafe(s) {
   try { return decodeURIComponent(s) } catch { return s }
 }
@@ -38,7 +34,7 @@ function parseHash(hash) {
       type: 'movie',
       name: '',
       author: '',
-      values: Object.fromEntries(params.map(p => [p.key, defaultForParam(p)])),
+      values: Object.fromEntries(params.map(p => [p.key, 0.5])),
       excluded: new Set(params.map(p => p.key)),
     }
   }
@@ -72,7 +68,7 @@ function parseHash(hash) {
   const excluded = new Set()
   for (const p of params) {
     if (!(p.key in values)) {
-      values[p.key] = defaultForParam(p)
+      values[p.key] = 0.5
       excluded.add(p.key)
     }
   }
@@ -92,9 +88,19 @@ function buildUrl(type, name, values, excluded, params, author) {
   return '#' + hash
 }
 
-export function useEvaluation({ translateParam } = {}) {
-  const _skipPersistRef = useRef(false)
+function computeScore(values, params, excluded) {
+  let weightedSum = 0
+  let totalWeight = 0
+  for (const p of params) {
+    if (excluded.has(p.key)) continue
+    const v = values[p.key] ?? 0.5
+    weightedSum += v * p.weight
+    totalWeight += p.weight
+  }
+  return totalWeight > 0 ? weightedSum / totalWeight : 0
+}
 
+export function useEvaluation({ translateParam } = {}) {
   const { type: initialType, name: initialName, author: initialAuthor, values: initialValues, excluded: initialExcluded } = parseHash()
 
   const [type, setTypeState] = useState(initialType)
@@ -107,52 +113,62 @@ export function useEvaluation({ translateParam } = {}) {
   const [values, setValues] = useState(initialValues)
   const [excluded, setExcluded] = useState(initialExcluded)
 
+  const paramsRef = useRef([])
+  const _blockSave = useRef(false)
+  const _firstRender = useRef(true)
+  const _saveTimer = useRef(null)
+
   const adoptSharedAuthor = useCallback(() => {
     if (sharedAuthorRef.current) {
-      const name = sharedAuthorRef.current
-      setAuthorState(name)
-      localStorage.setItem(STORED_AUTHOR_KEY, name)
+      setAuthorState(sharedAuthorRef.current)
+      localStorage.setItem(STORED_AUTHOR_KEY, sharedAuthorRef.current)
       sharedAuthorRef.current = ''
     }
-  }, [])
-
-  const restore = useCallback((hash) => {
-    _skipPersistRef.current = true
-    const p = parseHash(hash)
-    setTypeState(p.type)
-    nameRef.current = p.name
-    setNameState(p.name)
-    setAuthorState(p.author ? '' : (localStorage.getItem(STORED_AUTHOR_KEY) || ''))
-    sharedAuthorRef.current = p.author || ''
-    setSharedAuthor(p.author || '')
-    setShowByField(!p.author)
-    setValues(p.values)
-    setExcluded(p.excluded)
   }, [])
 
   const params = useMemo(() => {
     const raw = resolveParams(type)
     return translateParam ? raw.map(translateParam) : raw
   }, [type, translateParam])
+  paramsRef.current = params
 
-  const setType = useCallback((newType) => {
-    _skipPersistRef.current = true
-    setTypeState(newType)
-    const newParams = resolveParams(newType)
-    const saved = nameRef.current && loadByTypeAndName(newType, nameRef.current)
+  useEffect(() => {
+    if (_firstRender.current) { _firstRender.current = false; return }
+    if (_blockSave.current) { _blockSave.current = false; return }
+    clearTimeout(_saveTimer.current)
+    _saveTimer.current = setTimeout(() => {
+      const n = nameRef.current?.trim()
+      if (!n) return
+      const hash = buildUrl(type, n, values, excluded, paramsRef.current, '').replace(/^#/, '')
+      save(type, n, hash)
+    }, 300)
+    return () => clearTimeout(_saveTimer.current)
+  }, [values, excluded])
+
+  const _loadState = useCallback((t, n, clearAuthor) => {
+    _blockSave.current = true
+    const ps = resolveParams(t)
+    const saved = n && loadByTypeAndName(t, n)
     if (saved?.hash) {
       const p = parseHash(saved.hash)
       setValues(p.values)
       setExcluded(p.excluded)
     } else {
-      setValues(Object.fromEntries(newParams.map(p => [p.key, defaultForParam(p)])))
-      setExcluded(new Set(newParams.map(p => p.key)))
+      setValues(Object.fromEntries(ps.map(p => [p.key, 0.5])))
+      setExcluded(new Set(ps.map(p => p.key)))
     }
-    sharedAuthorRef.current = ''
-    setSharedAuthor('')
-    setShowByField(true)
-    setAuthorState(localStorage.getItem(STORED_AUTHOR_KEY) || '')
+    if (clearAuthor) {
+      sharedAuthorRef.current = ''
+      setSharedAuthor('')
+      setShowByField(true)
+      setAuthorState(localStorage.getItem(STORED_AUTHOR_KEY) || '')
+    }
   }, [])
+
+  const setType = useCallback((newType) => {
+    setTypeState(newType)
+    _loadState(newType, nameRef.current, true)
+  }, [_loadState])
 
   const setName = useCallback((n) => {
     nameRef.current = n
@@ -188,57 +204,28 @@ export function useEvaluation({ translateParam } = {}) {
   }, [adoptSharedAuthor])
 
   const resetAll = useCallback(() => {
-    _skipPersistRef.current = true
-    const ps = resolveParams(type)
-    setValues(Object.fromEntries(ps.map(p => [p.key, defaultForParam(p)])))
-    setExcluded(new Set(ps.map(p => p.key)))
-  }, [type])
+    _loadState(type, null, false)
+  }, [type, _loadState])
+
+  const resetCurrent = useCallback(() => {
+    const n = nameRef.current?.trim()
+    if (n) remove(type, n)
+    _loadState(type, null, false)
+  }, [type, _loadState])
 
   const clearShared = useCallback(() => {
-    _skipPersistRef.current = true
-    sharedAuthorRef.current = ''
-    setSharedAuthor('')
-    setShowByField(true)
-    setAuthorState(localStorage.getItem(STORED_AUTHOR_KEY) || '')
-    const saved = nameRef.current && loadByTypeAndName(type, nameRef.current)
-    if (saved?.hash) {
-      const p = parseHash(saved.hash)
-      setValues(p.values)
-      setExcluded(p.excluded)
-    } else {
-      const ps = resolveParams(type)
-      setValues(Object.fromEntries(ps.map(p => [p.key, defaultForParam(p)])))
-      setExcluded(new Set(ps.map(p => p.key)))
-    }
-  }, [type])
+    _loadState(type, nameRef.current, true)
+  }, [type, _loadState])
 
-  const totalScore = useMemo(() => {
-    let weightedSum = 0
-    let totalWeight = 0
-    for (const p of params) {
-      if (excluded.has(p.key)) continue
-      const v = values[p.key] ?? defaultForParam(p)
-      weightedSum += v * p.weight
-      totalWeight += p.weight
-    }
-    return totalWeight > 0 ? weightedSum / totalWeight : 0
-  }, [params, values, excluded])
+  const totalScore = useMemo(() => computeScore(values, params, excluded), [params, values, excluded])
 
-  return { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, clearShared, _skipPersistRef }
+  return { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, resetCurrent, clearShared }
 }
 
 function scoreFromHash(hash) {
   const { type, values, excluded } = parseHash(hash)
   const params = resolveParams(type)
-  let weightedSum = 0
-  let totalWeight = 0
-  for (const p of params) {
-    if (excluded.has(p.key)) continue
-    const v = values[p.key] ?? defaultForParam(p)
-    weightedSum += v * p.weight
-    totalWeight += p.weight
-  }
-  return totalWeight > 0 ? weightedSum / totalWeight : 0
+  return computeScore(values, params, excluded)
 }
 
 function detailsFromHash(hash) {

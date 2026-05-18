@@ -4,36 +4,22 @@ import { ScoreSummary } from '../molecules/ScoreSummary'
 import { LangSwitcher } from '../molecules/LangSwitcher'
 import { useEvaluation } from '../hooks/useEvaluation'
 import { useUrlSync } from '../hooks/useUrlSync'
-import { useStorageSync } from '../hooks/useStorage'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
-import { remove } from '../hooks/useStorage'
 
 export function EvaluationPage({ onHome }) {
   const { t, translateParam, locale } = useI18n()
-  const evalState = useEvaluation({ translateParam })
-  const { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, restore, clearShared, _skipPersistRef } = evalState
+  const { type, setType, name, setName, author, setAuthor, sharedAuthor, showByField, params, values, setParamValue, excluded, toggleExcluded, totalScore, resetAll, resetCurrent, clearShared } = useEvaluation({ translateParam })
 
   useUrlSync({
     type, name, author,
     values, excluded, params,
   })
 
-  useStorageSync({
-    type, name, author,
-    values, excluded, params,
-    skipRef: _skipPersistRef,
-  })
-
   const handleReset = useCallback(() => {
-    if (sharedAuthor) {
-      clearShared()
-    } else {
-      if (name.trim()) remove(type, name)
-      resetAll()
-    }
-  }, [type, name, sharedAuthor, resetAll, clearShared])
+    sharedAuthor ? clearShared() : resetCurrent()
+  }, [sharedAuthor, clearShared, resetCurrent])
   const nameInputRef = useRef(null)
 
   const [thumbUrl, setThumbUrl] = useState(null)

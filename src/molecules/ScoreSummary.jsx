@@ -7,7 +7,7 @@ import { buildUrl } from '../hooks/useEvaluation'
 import { accentColor } from '../utils/color'
 
 export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sharedAuthor, showByField, onReset, nameInputRef, type, params, values, excluded, thumbUrl }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const num = Math.round(totalScore * 100)
   const formatted = String(num).padStart(3, '0')
   const outOf10 = (totalScore * 10).toFixed(1)
@@ -29,7 +29,7 @@ export function ScoreSummary({ totalScore, name, setName, author, setAuthor, sha
 
   return (
     <div class="score-summary" style={`--param-accent:${scoreColor};--glow:${glowIntensity}`}>
-      {thumbUrl && <img class="score-thumb" src={thumbUrl} alt={name} />}
+      {thumbUrl && <a href={`https://${locale}.wikipedia.org/wiki/${encodeURIComponent(name.replace(/\s+/g, '_'))}`} target="_blank" rel="noopener noreferrer"><img class="score-thumb" src={thumbUrl} alt={name} /></a>}
       <div class="score-body">
         <div class="flex-row">
           <NameInput inputRef={nameInputRef} value={name} onChange={setName} />

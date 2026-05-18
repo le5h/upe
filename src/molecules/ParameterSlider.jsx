@@ -14,13 +14,13 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
   const originRef = useRef(null)
   const dragging = useRef(false)
   const pressValRef = useRef(value)
+  const rafRef = useRef(null)
+  const pendingVal = useRef(null)
 
   const v2p = (v) => ((v - min) / (max - min)) * 100
 
   const setVisual = (v) => {
-    const p = v2p(v)
-    const s = p + '%'
-    rootRef.current.style.setProperty('--slider-pct', s)
+    rootRef.current.style.setProperty('--slider-scale', v2p(v) / 100)
     rootRef.current.style.setProperty('--param-accent', accentColor(v))
     if (!isBinary) valueRef.current.textContent = v.toFixed(2)
     if (stepsRef.current) {
@@ -68,12 +68,17 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
       dragging.current = true
     }
 
-    const v = min + tFromX(e.clientX) * (max - min)
-    setVisual(v)
-    onChange(param.key, commitVal(v))
+    pendingVal.current = min + tFromX(e.clientX) * (max - min)
+    if (!rafRef.current) {
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null
+        setVisual(pendingVal.current)
+      })
+    }
   }
 
   const handlePointerUp = (e) => {
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
     originRef.current = null
     if (!dragging.current) {
       const final = commitVal(pressValRef.current)
@@ -91,6 +96,7 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
   }
 
   const handlePointerCancel = () => {
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
     dragging.current = false
     setVisual(value)
   }
@@ -101,7 +107,6 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
     onChange(param.key, s.value)
   }
 
-  const pct = v2p(value)
   const closestStep = isBinary && value === 0.5
     ? null
     : steps.reduce((a, b) => Math.abs(b.value - value) < Math.abs(a.value - value) ? b : a)
@@ -110,7 +115,7 @@ export function ParameterSlider({ param, value, onChange, excluded, onToggleExcl
     <div
       ref={rootRef}
       class={`param-slider ${excluded ? 'param-excluded' : ''}`}
-      style={`--slider-pct:${pct}%;--param-accent:${accentColor(value)}`}
+      style={`--slider-scale:${v2p(value) / 100};--param-accent:${accentColor(value)}`}
     >
       <div class="param-header">
         <label class="param-checkbox">
