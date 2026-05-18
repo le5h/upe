@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://universal-param-eval.netlify.app/sitemap.xml
+Sitemap: https://upe.le5h.ru/sitemap.xml
