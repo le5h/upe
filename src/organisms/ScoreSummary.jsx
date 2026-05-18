@@ -1,6 +1,6 @@
 import { useRef, useState } from 'preact/hooks'
 import { ScoreBar } from '../atoms/ScoreBar'
-import { NameInput } from './NameInput'
+import { NameInput } from '../molecules/NameInput'
 import { useI18n } from '../i18n/context'
 import { Trans } from '../i18n/Trans'
 import { buildUrl } from '../hooks/useEvaluation'

@@ -1,6 +1,6 @@
 import { TypeSelector } from '../molecules/TypeSelector'
 import { ParameterList } from '../organisms/ParameterList'
-import { ScoreSummary } from '../molecules/ScoreSummary'
+import { ScoreSummary } from '../organisms/ScoreSummary'
 import { LangSwitcher } from '../molecules/LangSwitcher'
 import { useEvaluation } from '../hooks/useEvaluation'
 import { useUrlSync } from '../hooks/useUrlSync'
