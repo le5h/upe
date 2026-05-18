@@ -6,7 +6,7 @@ import { Footer } from '../molecules/Footer'
 import { useDocumentMeta } from '../hooks/useDocumentMeta'
 
 function getPage() {
-  const hash = location.hash.slice(1)
+  const hash = typeof location !== 'undefined' ? location.hash.slice(1) : ''
   if (!hash) return 'home'
   return config.types[hash.split(';')[0].split(':')[0]] ? 'eval' : 'home'
 }

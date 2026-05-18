@@ -20,6 +20,7 @@ const LOAD_LOCALE = {
 const RTL_LOCALES = new Set(['ar'])
 
 function detectLocale(locales) {
+  if (typeof window === 'undefined') return locales[0] || 'en'
   const saved = localStorage.getItem('locale')
   if (saved && locales.includes(saved)) return saved
   const browser = navigator.language?.split('-')[0]
@@ -29,9 +30,9 @@ function detectLocale(locales) {
 
 const I18nContext = createContext()
 
-export function I18nProvider({ locales, children }) {
-  const [locale, setLocaleState] = useState(() => detectLocale(locales))
-  const [translations, setTranslations] = useState({})
+export function I18nProvider({ locales, children, initialLocale, initialTranslations }) {
+  const [locale, setLocaleState] = useState(() => initialLocale || detectLocale(locales))
+  const [translations, setTranslations] = useState(initialTranslations || {})
 
   useEffect(() => {
     const loader = LOAD_LOCALE[locale]

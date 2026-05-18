@@ -27,7 +27,7 @@ function decodeSafe(s) {
 }
 
 function parseHash(hash) {
-  hash = (hash || location.hash.slice(1)).replace(/\|/g, ';').replace(/^#/, '')
+  hash = (hash || (typeof location !== 'undefined' ? location.hash.slice(1) : '')).replace(/\|/g, ';').replace(/^#/, '')
   if (!hash) {
     const params = resolveParams('movie')
     return {

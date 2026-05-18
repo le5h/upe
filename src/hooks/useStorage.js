@@ -3,7 +3,10 @@ import { buildUrl } from './useEvaluation'
 
 const PREFIX = 'eval:'
 
+function hasLS() { return typeof window !== 'undefined' && typeof localStorage !== 'undefined' }
+
 function loadItem(key) {
+  if (!hasLS()) return null
   const rest = key.slice(PREFIX.length)
   const colonIdx = rest.indexOf(':')
   if (colonIdx === -1) return null
@@ -17,6 +20,7 @@ function loadItem(key) {
 }
 
 export function listAll() {
+  if (!hasLS()) return []
   const results = []
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i)
@@ -39,11 +43,12 @@ export function loadByTypeAndName(type, name) {
 }
 
 export function save(type, name, hash) {
-  if (!name || !name.trim()) return
+  if (!hasLS() || !name || !name.trim()) return
   localStorage.setItem(PREFIX + type + ':' + name.trim(), hash)
 }
 
 export function remove(type, name) {
+  if (!hasLS()) return
   localStorage.removeItem(PREFIX + type + ':' + name.trim())
 }
 
